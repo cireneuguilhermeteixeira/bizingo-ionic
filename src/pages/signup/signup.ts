@@ -1,14 +1,11 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IonicPage, NavController, ToastController, Content, Events, NavParams, Platform, MenuController } from 'ionic-angular';
-
-import { User } from '../../providers';
-import { MainPage } from '../';
+import { IonicPage, NavController, ToastController, Content, Events, NavParams, Platform, MenuController, App, IonicApp } from 'ionic-angular';
 import { UserInfo } from '../../models/user-info';
 import { ChatMessage } from '../../models/chat-message';
 import { ChatService } from '../../providers/chat-service';
-
-
+import {PecaTabuleiro} from '../../models/peca-tabuleiro';
+import { TabuleiroService } from '../../providers/tabuleiro-service';
 
 @IonicPage()
 @Component({
@@ -16,7 +13,10 @@ import { ChatService } from '../../providers/chat-service';
   templateUrl: 'signup.html'
 })
 export class SignupPage {
-  chatVisible = false;
+  pecasPlayer1: Array<PecaTabuleiro> = [];
+  pecasPlayer2: Array<PecaTabuleiro> = [];
+
+  chatVisible = true;
   heightScreen = 100;
   @ViewChild(Content) content: Content;
   @ViewChild('chat_input') messageInput: ElementRef;
@@ -25,7 +25,7 @@ export class SignupPage {
   toUser: UserInfo;
   editorMsg = '';
   showEmojiPicker = false;
-
+  
 
  
   
@@ -33,6 +33,7 @@ export class SignupPage {
   private signupErrorString: string;
 
   constructor(
+    public tabuleiroService: TabuleiroService,
     public menu: MenuController,
     public platform: Platform,
     public navParams: NavParams,
@@ -42,10 +43,8 @@ export class SignupPage {
     public toastCtrl: ToastController,
     public translateService: TranslateService) {
 
-    platform.ready().then((readySource) => {
-         this.heightScreen = platform.height();
-    });
-
+   
+    
     this.translateService.get('SIGNUP_ERROR').subscribe((value) => {
       this.signupErrorString = value;
     })
@@ -60,9 +59,7 @@ export class SignupPage {
   }
 
   toogleChat(){
-    this.chatVisible = !this.chatVisible;
-    console.log(this.chatVisible);
-    
+    this.chatVisible = !this.chatVisible;    
   }
 
 
@@ -73,13 +70,29 @@ export class SignupPage {
 
   ionViewDidEnter() {
     //get message list
+    this.getPecasP1();
+    this.getPecasP2();
     this.getMsg();
-
     // Subscribe to received  new message events
     this.events.subscribe('chat:received', msg => {
       this.pushNewMsg(msg);
     })
   }
+
+  getPecasP1(){
+    this.tabuleiroService.getPecasPLayer1()
+    .subscribe(res=> {
+      console.log('res',res);
+      
+      this.pecasPlayer1 = res});
+  }
+
+  getPecasP2(){
+    this.tabuleiroService.getPecasPLayer2()
+    .subscribe(res=> this.pecasPlayer2 = res);
+  }
+
+
 
   onFocus() {
     this.showEmojiPicker = false;
@@ -98,24 +111,21 @@ export class SignupPage {
     this.scrollToBottom();
   }
 
-  /**
-   * @name getMsg
-   * @returns {Promise<ChatMessage[]>}
-   */
+
+
+
   getMsg() {
     // Get mock message list
     
     return this.chatService.getMsgList()
     .subscribe(res => {
-      console.log('msgList',res);
       this.msgList = res;
       this.scrollToBottom();
     });
   }
 
-  /**
-   * @name sendMsg
-   */
+  
+
   sendMsg() {
     if (!this.editorMsg.trim()) return;
 
@@ -148,10 +158,8 @@ export class SignupPage {
     })
   }
 
-  /**
-   * @name pushNewMsg
-   * @param msg
-   */
+  
+
   pushNewMsg(msg: ChatMessage) {
     const userId = this.user.id,
       toUserId = this.toUser.id;
@@ -168,7 +176,13 @@ export class SignupPage {
     return this.msgList.findIndex(e => e.messageId === id)
   }
 
+  
+
+
   scrollToBottom() {
+    //this.content = document.getElementById('bp');
+    //var messagesContent = this.app as Content;
+    //messagesContent.scrollTo(0, messagesContent.getContentDimensions().contentHeight, 700);
     setTimeout(() => {
       if (this.content.scrollToBottom) {
         this.content.scrollToBottom();
@@ -185,6 +199,16 @@ export class SignupPage {
   private setTextareaScroll() {
     const textarea =this.messageInput.nativeElement;
     textarea.scrollTop = textarea.scrollHeight;
+  }
+
+  prepareToMove(peca:PecaTabuleiro){    
+    let pixelLeft = Number(peca.cssProperty["margin-left"].split('px')[0]);
+    let pixelTop = Number(peca.cssProperty["margin-top"].split('px')[0]);
+    pixelLeft = pixelLeft + 20;
+    pixelTop = pixelTop + 20;
+    peca.cssProperty["margin-left"] = pixelLeft+'px';
+    peca.cssProperty["margin-top"] = pixelTop+'px';
+    //element.classList.add('animated', 'bounceOutLeft')
   }
   
 }

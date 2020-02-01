@@ -12,41 +12,58 @@
       <div class="my-container">
 
         <!--Peças player 1-->
-        <div  class="part-player-1" title="peça 1 - (player 1)">
-          <div class="inside-player-1"></div>
-        </div>
+        <div *ngFor="let pecaPlayer1 of pecasPlayer1; let i= index">
+          <div  
+             (click)="prepareToMove(pecaPlayer1)"
+             [style.margin-left]="pecaPlayer1.cssProperty['margin-left']"
+             [style.margin-top]="pecaPlayer1.cssProperty['margin-top']"
+             class="part-player-1"
+             [title]="'peça '+(i+1)+' - (player 1)'">
 
+            <div class="inside-player-1"></div>
+          </div>
+        </div>  
          <!--Peças player 2-->
-         <div class="part-player-2" title="peça 1 - (player 2)">
-          <div class="inside-player-2"></div>
-        </div>
+        
+         <div *ngFor="let pecaPlayer2 of pecasPlayer2; let i= index">
+          <div 
+          (click)="prepareToMove(pecaPlayer2)"
+          [style.margin-left]="pecaPlayer2.cssProperty['margin-left']"
+          [style.margin-top]="pecaPlayer2.cssProperty['margin-top']"
+          class="part-player-2"
+          [title]="'peça '+(i+1)+' - (player 2)'">
+            <div class="inside-player-2"></div>
+          </div>
+        </div> 
+         
+
         <!--Tabuleiro-->
         <!--Line 1-->
-        <div class="arrow-up" id="position-1-1"></div>
-        <div class="arrow-down" id="position-1-2"></div>
-        <div class="arrow-up" id="position-1-3"></div>
-        <div class="arrow-down" id="position-1-4"></div>
-        <div class="arrow-up" id="position-1-5"></div>
+        <div class="arrow-up" id="position-1-1" (click)="goTo('1-1')"></div>
+        <div class="arrow-down" id="position-1-2" (click)="goTo('1-2')"></div>
+        <div class="arrow-up" id="position-1-3" (click)="goTo('1-3')"></div>
+        <div class="arrow-down" id="position-1-4" (click)="goTo('1-4')"></div>
+        <div class="arrow-up" id="position-1-5" (click)="goTo('1-5')"></div>
         
         <!--Line 2-->
-        <div class="arrow-up" id="position-2-1"></div>
-        <div class="arrow-down" id="position-2-2"></div>
-        <div class="arrow-up" id="position-2-3"></div>
-        <div class="arrow-down" id="position-2-4"></div>
-        <div class="arrow-up" id="position-2-5"></div>
-        <div class="arrow-down" id="position-2-6"></div>
-        <div class="arrow-up" id="position-2-7"></div>
+        <div class="arrow-up" id="position-2-1" (click)="goTo('2-1')"></div>
+        <div class="arrow-down" id="position-2-2" (click)="goTo('2-2')"></div>
+        <div class="arrow-up" id="position-2-3" (click)="goTo('2-3')"></div>
+        <div class="arrow-down" id="position-2-4" (click)="goTo('2-4')"></div>
+        <div class="arrow-up" id="position-2-5" (click)="goTo('2-5')"></div>
+        <div class="arrow-down" id="position-2-6" (click)="goTo('2-6')"></div>
+        <div class="arrow-up" id="position-2-7" (click)="goTo('2-7')"></div>
 
         <!--Line 3-->
-        <div class="arrow-up" id="position-3-1"></div>
-        <div class="arrow-down" id="position-3-2"></div>
-        <div class="arrow-up" id="position-3-3"></div>
-        <div class="arrow-down" id="position-3-4"></div>
-        <div class="arrow-up" id="position-3-5"></div>
-        <div class="arrow-down" id="position-3-6"></div>
-        <div class="arrow-up" id="position-3-7"></div>
-        <div class="arrow-down" id="position-3-8"></div>
-        <div class="arrow-up" id="position-3-9"></div>
+        <div class="arrow-up" id="position-3-1" (click)="goTo('3-1')"></div>
+        <div class="arrow-down" id="position-3-2" (click)="goTo('3-2')"></div>
+        <div class="arrow-up" id="position-3-3" (click)="goTo('3-3')"></div>
+        <div class="arrow-down" id="position-3-4" (click)="goTo('3-4')"></div>
+        <div class="arrow-up" id="position-3-5" (click)="goTo('3-5')"></div>
+        <div class="arrow-down" id="position-3-6" (click)="goTo('3-6')"></div>
+        <div class="arrow-up" id="position-3-7" (click)="goTo('3-7')"></div>
+        <div class="arrow-down" id="position-3-8" (click)="goTo('3-8')"></div>
+        <div class="arrow-up" id="position-3-9" (click)="goTo('3-9')"></div>
 
 
         <!--Line 4-->
@@ -211,7 +228,7 @@
           </div>
       </div>
 
-      <div class="batePapo" *ngIf="chatVisible">
+      <div class="batePapo" *ngIf="chatVisible" id="bp">
         
         <div (click)="toogleChat()" padding="5px">
           Bate-Papo
@@ -243,6 +260,10 @@
             </div>
           </div>
         </div>
+
+
+
+
         <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
           <div class="input-wrap">
             <button ion-button clear icon-only item-right (click)="switchEmojiPicker()">

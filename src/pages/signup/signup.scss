@@ -1,6 +1,6 @@
 page-signup {
     //const
-    $size: 28px;
+    $size: 30px;
 
     $userBackgroundColor: #1EBEA5;
     $toUserBackgroundColor: #e7e5e5;
@@ -19,8 +19,8 @@ page-signup {
     border-radius: 50%;
     background-color: $colorPrimaryPlayer1;
     position: absolute;
-    margin-top: ($size*8);
-    margin-left:  ($size*10)+($size*8)+12px;
+    //margin-top: ($size*8);
+    //margin-left:  ($size*10)+($size*8)+12px;
     z-index: 999;
   }
 
@@ -41,8 +41,8 @@ page-signup {
     border-radius: 50%;
     background-color: $colorPrimaryPlayer2;
     position: absolute;
-    margin-top: ($size*5);
-    margin-left:  ($size*10)+($size*0)+12px;
+    //margin-top: ($size*5);
+    //margin-left:  ($size*10)+($size*0)+12px;
     z-index: 999;
   }
 
