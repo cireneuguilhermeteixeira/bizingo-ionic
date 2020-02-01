@@ -8,35 +8,45 @@
 
 
 <ion-content text-center >
-  <ion-grid>
-    <ion-row center padding="20px"> 
-      <ion-col>
+ 
+      <div class="my-container">
+
+        <!--Peças player 1-->
+        <div  class="part-player-1" title="peça 1 - (player 1)">
+          <div class="inside-player-1"></div>
+        </div>
+
+         <!--Peças player 2-->
+         <div class="part-player-2" title="peça 1 - (player 2)">
+          <div class="inside-player-2"></div>
+        </div>
+        <!--Tabuleiro-->
         <!--Line 1-->
-        <div class="arrow-up center" id="position-1-1"></div>
-        <div class="arrow-down center" id="position-1-2"></div>
-        <div class="arrow-up center" id="position-1-3"></div>
-        <div class="arrow-down center" id="position-1-4"></div>
-        <div class="arrow-up center" id="position-1-5"></div>
+        <div class="arrow-up" id="position-1-1"></div>
+        <div class="arrow-down" id="position-1-2"></div>
+        <div class="arrow-up" id="position-1-3"></div>
+        <div class="arrow-down" id="position-1-4"></div>
+        <div class="arrow-up" id="position-1-5"></div>
         
         <!--Line 2-->
-        <div class="arrow-up center" id="position-2-1"></div>
-        <div class="arrow-down center" id="position-2-2"></div>
-        <div class="arrow-up center" id="position-2-3"></div>
-        <div class="arrow-down center" id="position-2-4"></div>
-        <div class="arrow-up center" id="position-2-5"></div>
-        <div class="arrow-down center" id="position-2-6"></div>
-        <div class="arrow-up center" id="position-2-7"></div>
+        <div class="arrow-up" id="position-2-1"></div>
+        <div class="arrow-down" id="position-2-2"></div>
+        <div class="arrow-up" id="position-2-3"></div>
+        <div class="arrow-down" id="position-2-4"></div>
+        <div class="arrow-up" id="position-2-5"></div>
+        <div class="arrow-down" id="position-2-6"></div>
+        <div class="arrow-up" id="position-2-7"></div>
 
         <!--Line 3-->
-        <div class="arrow-up center" id="position-3-1"></div>
-        <div class="arrow-down center" id="position-3-2"></div>
-        <div class="arrow-up center" id="position-3-3"></div>
-        <div class="arrow-down center" id="position-3-4"></div>
-        <div class="arrow-up center" id="position-3-5"></div>
-        <div class="arrow-down center" id="position-3-6"></div>
-        <div class="arrow-up center" id="position-3-7"></div>
-        <div class="arrow-down center" id="position-3-8"></div>
-        <div class="arrow-up center" id="position-3-9"></div>
+        <div class="arrow-up" id="position-3-1"></div>
+        <div class="arrow-down" id="position-3-2"></div>
+        <div class="arrow-up" id="position-3-3"></div>
+        <div class="arrow-down" id="position-3-4"></div>
+        <div class="arrow-up" id="position-3-5"></div>
+        <div class="arrow-down" id="position-3-6"></div>
+        <div class="arrow-up" id="position-3-7"></div>
+        <div class="arrow-down" id="position-3-8"></div>
+        <div class="arrow-up" id="position-3-9"></div>
 
 
         <!--Line 4-->
@@ -191,36 +201,74 @@
           <div class="arrow-up center" id="position-11-18"></div>
           <div class="arrow-down center" id="position-11-19"></div>
 
-
-          <div>
-            
+          <div padding class="row dados-jogo">
+            <div class="col">
+              Player 1: 100 pts
+            </div>
+            <div class="col">
+              Player 2: 40 pts
+            </div>
           </div>
-      </ion-col>
-      <ion-col [ngStyle]="batePapo">
-        bate-papo
-        <br>
-        <div class="message-wrap">
-          <div *ngFor="let msg of msgList"
-               class="message"
-               [class.left]=" msg.userId === toUser.id "
-               [class.right]=" msg.userId === user.id ">
-            <img class="user-img" [src]="msg.userAvatar" alt="" src="">
-            <ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>
-            <div class="msg-detail">
-              <div class="msg-info">
-                <p>
-                  {{msg.userName}}&nbsp;&nbsp;&nbsp;{{msg.time | relativeTime}}</p>
-              </div>
-              <div class="msg-content">
-                <span class="triangle"></span>
-                <p class="line-breaker ">{{msg.message}}</p>
+      </div>
+
+      <div class="batePapo" *ngIf="chatVisible">
+        
+        <div (click)="toogleChat()" padding="5px">
+          Bate-Papo
+          <div style="text-align: right;cursor:pointer; margin-top: -20px;">
+            <ion-icon name="close" ></ion-icon>          
+          </div>
+          <hr>
+        </div>
+        <div class="container-bate-papo">
+         
+          <br>
+          <div class="message-wrap">
+            <div *ngFor="let msg of msgList"
+                class="message"
+                [class.left]=" msg.userId === toUser.id "
+                [class.right]=" msg.userId === user.id ">
+              <img class="user-img" [src]="msg.userAvatar" alt="" src="">
+              <ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>
+              <div class="msg-detail">
+                <div class="msg-info">
+                  <p>
+                    {{msg.userName}}&nbsp;&nbsp;&nbsp;{{msg.time | relativeTime}}</p>
+                </div>
+                <div class="msg-content">
+                  <span class="triangle"></span>
+                  <p class="line-breaker ">{{msg.message}}</p>
+                </div>
               </div>
             </div>
           </div>
-      
         </div>
-      </ion-col>
+        <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
+          <div class="input-wrap">
+            <button ion-button clear icon-only item-right (click)="switchEmojiPicker()">
+              <ion-icon name="md-happy"></ion-icon>
+            </button>
+            <textarea #chat_input
+                      placeholder="Converse com o oponente"
+                      [(ngModel)]="editorMsg"
+                      (keyup.enter)="sendMsg()"
+                      (focusin)="onFocus()">
+            </textarea>
+            <button ion-button clear icon-only item-right (click)="sendMsg()">
+              <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
+            </button>
+          </div>
+          <!--emoji-picker [(ngModel)]="editorMsg"></!--emoji-picker-->
+        </ion-footer>
+      </div>
 
-    </ion-row>
-  </ion-grid>
+      <div class="batePapo" *ngIf="!chatVisible">
+        <div style="padding: 10px;"  (click)="toogleChat()">
+          Converse com seu oponente
+          <button ion-button color="primary">
+            <ion-icon name="chatboxes"></ion-icon>
+          </button>
+        </div>
+        
+      </div>
 </ion-content>

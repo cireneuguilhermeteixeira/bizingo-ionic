@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IonicPage, NavController, ToastController, Content, Events, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, ToastController, Content, Events, NavParams, Platform, MenuController } from 'ionic-angular';
 
 import { User } from '../../providers';
 import { MainPage } from '../';
@@ -8,13 +8,16 @@ import { UserInfo } from '../../models/user-info';
 import { ChatMessage } from '../../models/chat-message';
 import { ChatService } from '../../providers/chat-service';
 
+
+
 @IonicPage()
 @Component({
   selector: 'page-signup',
   templateUrl: 'signup.html'
 })
 export class SignupPage {
-
+  chatVisible = false;
+  heightScreen = 100;
   @ViewChild(Content) content: Content;
   @ViewChild('chat_input') messageInput: ElementRef;
   msgList: ChatMessage[] = [];
@@ -22,22 +25,26 @@ export class SignupPage {
   toUser: UserInfo;
   editorMsg = '';
   showEmojiPicker = false;
-  batePapo ={
-    'background-color':'#fff',
-    'border-radius':'10px',
-    'max-width': '350px',
-  }
+
+
+ 
   
   // Our translated text strings
   private signupErrorString: string;
 
   constructor(
+    public menu: MenuController,
+    public platform: Platform,
     public navParams: NavParams,
     public chatService: ChatService,
-    private events: Events,
+    public events: Events,
     public navCtrl: NavController,
     public toastCtrl: ToastController,
     public translateService: TranslateService) {
+
+    platform.ready().then((readySource) => {
+         this.heightScreen = platform.height();
+    });
 
     this.translateService.get('SIGNUP_ERROR').subscribe((value) => {
       this.signupErrorString = value;
@@ -52,7 +59,11 @@ export class SignupPage {
     });
   }
 
-
+  toogleChat(){
+    this.chatVisible = !this.chatVisible;
+    console.log(this.chatVisible);
+    
+  }
 
 
   ionViewWillLeave() {

@@ -1,16 +1,97 @@
 page-signup {
     //const
-    $size: 30px;
+    $size: 28px;
 
-
-    //CSS chat
-
-    $userBackgroundColor: #387ef5;
+    $userBackgroundColor: #1EBEA5;
     $toUserBackgroundColor: #e7e5e5;
 
-  ion-content .scroll-content {
-    background-color: #dbd7d7;
+    $colorPrimaryPlayer1:  #b82020;
+    $colorSecondaryPlayer1:  #d33c3c;
+
+    $colorPrimaryPlayer2:  #153469;
+    $colorSecondaryPlayer2:  #0c47ad;
+
+
+   .part-player-1{
+    cursor: pointer;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    background-color: $colorPrimaryPlayer1;
+    position: absolute;
+    margin-top: ($size*8);
+    margin-left:  ($size*10)+($size*8)+12px;
+    z-index: 999;
   }
+
+  .inside-player-1{
+    margin-top:  $size/4;
+    margin-left:  $size/4;
+    width: $size/2;
+    height: $size/2;
+    border-radius: 50%;
+    background-color: $colorSecondaryPlayer1;
+  }
+
+
+  .part-player-2{
+    cursor: pointer;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    background-color: $colorPrimaryPlayer2;
+    position: absolute;
+    margin-top: ($size*5);
+    margin-left:  ($size*10)+($size*0)+12px;
+    z-index: 999;
+  }
+
+  .inside-player-2{
+    margin-top:  $size/4;
+    margin-left:  $size/4;
+    width: $size/2;
+    height: $size/2;
+    border-radius: 50%;
+    background-color: $colorSecondaryPlayer2;
+  }
+
+  .my-container{
+    position:center;
+    padding:20px;
+    max-width: $size*30;
+  }
+
+
+  .dados-jogo{
+    margin-top: $size*12;
+  }
+
+
+  //CSS chat
+
+  .batePapo {
+    color: #273443;
+    background-color:#fff;
+    border-radius:10px;
+    max-width: 350px;
+    position: fixed;
+    right: 0;
+    bottom:0;
+    
+
+  }
+
+  ion-content .scroll-content {
+    background-color: #273443;
+    color: white;
+  }
+
+  .container-bate-papo{
+    overflow-y:scroll;
+    height:$size*15;
+    margin-bottom: 50px;
+  }
+
 
   ion-footer {
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
