@@ -1,4 +1,4 @@
-page-signup {
+page-game {
     //const
     $size: 30px;
 
@@ -19,9 +19,13 @@ page-signup {
     border-radius: 50%;
     background-color: $colorPrimaryPlayer1;
     position: absolute;
-    //margin-top: ($size*8);
-    //margin-left:  ($size*10)+($size*8)+12px;
-    z-index: 999;
+    margin-top: ($size*0);
+    margin-left:  ($size*10)+($size*8)+12px;
+    z-index: 9;
+  }
+
+  .captain-player1{
+    background-color: #c2c511;
   }
 
   .inside-player-1{
@@ -43,9 +47,14 @@ page-signup {
     position: absolute;
     //margin-top: ($size*5);
     //margin-left:  ($size*10)+($size*0)+12px;
-    z-index: 999;
+    z-index: 9;
   }
 
+  .captain-player2{
+    background-color: #1a1919;
+  }
+
+  
   .inside-player-2{
     margin-top:  $size/4;
     margin-left:  $size/4;
@@ -70,6 +79,7 @@ page-signup {
   //CSS chat
 
   .batePapo {
+    z-index: 10;
     color: #273443;
     background-color:#fff;
     border-radius:10px;

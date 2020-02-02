@@ -21,6 +21,6 @@ export class WelcomePage {
   }
 
   signup() {
-    this.navCtrl.push('SignupPage');
+    this.navCtrl.push('GamePage');
   }
 }

@@ -1,0 +1,298 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>BIZINGO</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content text-center >
+ 
+      <div class="my-container">
+
+        <!--Peças player 1-->
+        <div *ngFor="let pecaPlayer1 of pecasPlayer1; let i= index">
+          <div  
+             (click)="prepareToMove(pecaPlayer1)"
+             [style.margin-left]="pecaPlayer1.cssProperty['margin-left']"
+             [style.margin-top]="pecaPlayer1.cssProperty['margin-top']"
+             [ngClass]="{ 'captain-player1' : pecaPlayer1.type == 'captain'}"
+             class="part-player-1"
+             [title]="'peça '+(i+1)+' - (player 1)'">
+
+            <div class="inside-player-1"></div>
+          </div>
+        </div>  
+         <!--Peças player 2-->
+        
+         <div *ngFor="let pecaPlayer2 of pecasPlayer2; let i= index">
+          <div 
+          (click)="prepareToMove(pecaPlayer2)"
+          [style.margin-left]="pecaPlayer2.cssProperty['margin-left']"
+          [style.margin-top]="pecaPlayer2.cssProperty['margin-top']"
+          [ngClass]="{ 'captain-player2' : pecaPlayer2.type == 'captain'}"
+          class="part-player-2"
+          [title]="'peça '+(i+1)+' - (player 2)'">
+
+            <div class="inside-player-2"></div>
+          </div>
+        </div> 
+         
+
+        <!--Tabuleiro-->
+        <!--Line 1-->
+        <div class="arrow-up" id="position-1-1" (click)="goTo('1-1')"></div>
+        <div class="arrow-down" id="position-1-2" (click)="goTo('1-2')"></div>
+        <div class="arrow-up" id="position-1-3" (click)="goTo('1-3')"></div>
+        <div class="arrow-down" id="position-1-4" (click)="goTo('1-4')"></div>
+        <div class="arrow-up" id="position-1-5" (click)="goTo('1-5')"></div>
+        
+        <!--Line 2-->
+        <div class="arrow-up center" id="position-2-1" (click)="goTo('2-1')"></div>
+        <div class="arrow-down center" id="position-2-2" (click)="goTo('2-2')"></div>
+        <div class="arrow-up center" id="position-2-3" (click)="goTo('2-3')"></div>
+        <div class="arrow-down center" id="position-2-4" (click)="goTo('2-4')"></div>
+        <div class="arrow-up center" id="position-2-5" (click)="goTo('2-5')"></div>
+        <div class="arrow-down center" id="position-2-6" (click)="goTo('2-6')"></div>
+        <div class="arrow-up center" id="position-2-7" (click)="goTo('2-7')"></div>
+
+        <!--Line 3-->
+        <div class="arrow-up center" id="position-3-1" (click)="goTo('3-1')"></div>
+        <div class="arrow-down center" id="position-3-2" (click)="goTo('3-2')"></div>
+        <div class="arrow-up center" id="position-3-3" (click)="goTo('3-3')"></div>
+        <div class="arrow-down center" id="position-3-4" (click)="goTo('3-4')"></div>
+        <div class="arrow-up center" id="position-3-5" (click)="goTo('3-5')"></div>
+        <div class="arrow-down center" id="position-3-6" (click)="goTo('3-6')"></div>
+        <div class="arrow-up center" id="position-3-7" (click)="goTo('3-7')"></div>
+        <div class="arrow-down center" id="position-3-8" (click)="goTo('3-8')"></div>
+        <div class="arrow-up center" id="position-3-9" (click)="goTo('3-9')"></div>
+
+
+        <!--Line 4-->
+        <div class="arrow-up center" id="position-4-1" (click)="goTo('4-1')"></div>
+        <div class="arrow-down center" id="position-4-2" (click)="goTo('4-2')"></div>
+        <div class="arrow-up center" id="position-4-3" (click)="goTo('4-3')"></div>
+        <div class="arrow-down center" id="position-4-4" (click)="goTo('4-4')"></div>
+        <div class="arrow-up center" id="position-4-5" (click)="goTo('4-5')"></div>
+        <div class="arrow-down center" id="position-4-6" (click)="goTo('4-6')"></div>
+        <div class="arrow-up center" id="position-4-7" (click)="goTo('4-7')"></div>
+        <div class="arrow-down center" id="position-4-8" (click)="goTo('4-8')"></div>
+        <div class="arrow-up center" id="position-4-9" (click)="goTo('4-9')"></div>
+        <div class="arrow-down center" id="position-4-10" (click)="goTo('4-10')"></div>
+        <div class="arrow-up center" id="position-4-11" (click)="goTo('4-11')"></div>
+        
+        <!--Line 5-->
+        <div class="arrow-up center" id="position-5-1" (click)="goTo('5-1')"></div>
+        <div class="arrow-down center" id="position-5-2" (click)="goTo('5-2')"></div>
+        <div class="arrow-up center" id="position-5-3" (click)="goTo('5-3')"></div>
+        <div class="arrow-down center" id="position-5-4" (click)="goTo('5-4')"></div>
+        <div class="arrow-up center" id="position-5-5" (click)="goTo('5-5')"></div>
+        <div class="arrow-down center" id="position-5-6" (click)="goTo('5-6')"></div>
+        <div class="arrow-up center" id="position-5-7" (click)="goTo('5-7')"></div>
+        <div class="arrow-down center" id="position-5-8" (click)="goTo('5-8')"></div>
+        <div class="arrow-up center" id="position-5-9" (click)="goTo('5-9')"></div>
+        <div class="arrow-down center" id="position-5-10" (click)="goTo('5-10')"></div>
+        <div class="arrow-up center" id="position-5-11" (click)="goTo('5-11')"></div>
+        <div class="arrow-down center" id="position-5-12" (click)="goTo('5-12')"></div>
+        <div class="arrow-up center" id="position-5-13" (click)="goTo('5-13')"></div>
+
+         <!--Line 6-->
+         <div class="arrow-up center" id="position-6-1" (click)="goTo('6-1')"></div>
+         <div class="arrow-down center" id="position-6-2" (click)="goTo('6-2')"></div>
+         <div class="arrow-up center" id="position-6-3" (click)="goTo('6-3')"></div>
+         <div class="arrow-down center" id="position-6-4" (click)="goTo('6-4')"></div>
+         <div class="arrow-up center" id="position-6-5" (click)="goTo('6-5')"></div>
+         <div class="arrow-down center" id="position-6-6" (click)="goTo('6-6')"></div>
+         <div class="arrow-up center" id="position-6-7" (click)="goTo('6-7')"></div>
+         <div class="arrow-down center" id="position-6-8" (click)="goTo('6-8')"></div>
+         <div class="arrow-up center" id="position-6-9" (click)="goTo('6-9')"></div>
+         <div class="arrow-down center" id="position-6-10" (click)="goTo('6-10')"></div>
+         <div class="arrow-up center" id="position-6-11" (click)="goTo('6-11')"></div>
+         <div class="arrow-down center" id="position-6-12" (click)="goTo('6-12')"></div>
+         <div class="arrow-up center" id="position-6-13" (click)="goTo('6-13')"></div>
+         <div class="arrow-down center" id="position-6-14" (click)="goTo('6-14')"></div>
+         <div class="arrow-up center" id="position-6-15" (click)="goTo('6-15')"></div>
+
+          <!--Line 7-->
+          <div class="arrow-up center" id="position-7-1" (click)="goTo('7-1')"></div>
+          <div class="arrow-down center" id="position-7-2" (click)="goTo('7-2')"></div>
+          <div class="arrow-up center" id="position-7-3" (click)="goTo('7-3')"></div>
+          <div class="arrow-down center" id="position-7-4" (click)="goTo('7-4')"></div>
+          <div class="arrow-up center" id="position-7-5" (click)="goTo('7-5')"></div>
+          <div class="arrow-down center" id="position-7-6" (click)="goTo('7-6')"></div>
+          <div class="arrow-up center" id="position-7-7" (click)="goTo('7-7')"></div>
+          <div class="arrow-down center" id="position-7-8" (click)="goTo('7-8')"></div>
+          <div class="arrow-up center" id="position-7-9" (click)="goTo('7-9')"></div>
+          <div class="arrow-down center" id="position-7-10" (click)="goTo('7-10')"></div>
+          <div class="arrow-up center" id="position-7-11" (click)="goTo('7-11')"></div>
+          <div class="arrow-down center" id="position-7-12" (click)="goTo('7-12')"></div>
+          <div class="arrow-up center" id="position-7-13" (click)="goTo('7-13')"></div>
+          <div class="arrow-down center" id="position-7-14" (click)="goTo('7-14')"></div>
+          <div class="arrow-up center" id="position-7-15" (click)="goTo('7-15')"></div>
+          <div class="arrow-down center" id="position-7-16" (click)="goTo('7-16')"></div>
+          <div class="arrow-up center" id="position-7-17" (click)="goTo('7-17')"></div>
+
+           <!--Line 8-->
+           <div class="arrow-up center" id="position-8-1" (click)="goTo('8-1')"></div>
+           <div class="arrow-down center" id="position-8-2" (click)="goTo('8-2')"></div>
+           <div class="arrow-up center" id="position-8-3" (click)="goTo('8-3')"></div>
+           <div class="arrow-down center" id="position-8-4" (click)="goTo('8-4')"></div>
+           <div class="arrow-up center" id="position-8-5" (click)="goTo('8-5')"></div>
+           <div class="arrow-down center" id="position-8-6" (click)="goTo('8-6')"></div>
+           <div class="arrow-up center" id="position-8-7" (click)="goTo('8-7')"></div>
+           <div class="arrow-down center" id="position-8-8" (click)="goTo('8-8')"></div>
+           <div class="arrow-up center" id="position-8-9" (click)="goTo('8-9')"></div>
+           <div class="arrow-down center" id="position-8-10" (click)="goTo('8-10')"></div>
+           <div class="arrow-up center" id="position-8-11" (click)="goTo('8-11')"></div>
+           <div class="arrow-down center" id="position-8-12" (click)="goTo('8-12')"></div>
+           <div class="arrow-up center" id="position-8-13" (click)="goTo('8-13')"></div>
+           <div class="arrow-down center" id="position-8-14" (click)="goTo('8-14')"></div>
+           <div class="arrow-up center" id="position-8-15" (click)="goTo('8-15')"></div>
+           <div class="arrow-down center" id="position-8-16" (click)="goTo('8-16')"></div>
+           <div class="arrow-up center" id="position-8-17" (click)="goTo('8-17')"></div>
+           <div class="arrow-down center" id="position-8-18" (click)="goTo('8-18')"></div>
+           <div class="arrow-up center" id="position-8-19" (click)="goTo('8-19')"></div>
+
+           <!--Line 9-->
+           <div class="arrow-up center" id="position-9-1" (click)="goTo('9-1')"></div>
+           <div class="arrow-down center" id="position-9-2" (click)="goTo('9-2')"></div>
+           <div class="arrow-up center" id="position-9-3" (click)="goTo('9-3')"></div>
+           <div class="arrow-down center" id="position-9-4" (click)="goTo('9-4')"></div>
+           <div class="arrow-up center" id="position-9-5" (click)="goTo('9-5')"></div>
+           <div class="arrow-down center" id="position-9-6" (click)="goTo('9-6')"></div>
+           <div class="arrow-up center" id="position-9-7" (click)="goTo('9-7')"></div>
+           <div class="arrow-down center" id="position-9-8" (click)="goTo('9-8')"></div>
+           <div class="arrow-up center" id="position-9-9" (click)="goTo('9-9')"></div>
+           <div class="arrow-down center" id="position-9-10" (click)="goTo('9-10')"></div>
+           <div class="arrow-up center" id="position-9-11" (click)="goTo('9-11')"></div>
+           <div class="arrow-down center" id="position-9-12" (click)="goTo('9-12')"></div>
+           <div class="arrow-up center" id="position-9-13" (click)="goTo('9-13')"></div>
+           <div class="arrow-down center" id="position-9-14" (click)="goTo('9-14')"></div>
+           <div class="arrow-up center" id="position-9-15" (click)="goTo('9-15')"></div>
+           <div class="arrow-down center" id="position-9-16" (click)="goTo('9-16')"></div>
+           <div class="arrow-up center" id="position-9-17" (click)="goTo('9-17')"></div>
+           <div class="arrow-down center" id="position-9-18" (click)="goTo('9-18')"></div>
+           <div class="arrow-up center" id="position-9-19" (click)="goTo('9-19')"></div>
+           <div class="arrow-down center" id="position-9-20" (click)="goTo('9-20')"></div>
+           <div class="arrow-up center" id="position-9-21" (click)="goTo('9-21')"></div>
+
+           <!--Line 10-->
+           <div class="arrow-down center" id="position-10-1" (click)="goTo('10-1')"></div>
+           <div class="arrow-up center" id="position-10-2" (click)="goTo('10-2')"></div>
+           <div class="arrow-down center" id="position-10-3" (click)="goTo('10-3')"></div>
+           <div class="arrow-up center" id="position-10-4" (click)="goTo('10-4')"></div>
+           <div class="arrow-down center" id="position-10-5" (click)="goTo('10-5')"></div>
+           <div class="arrow-up center" id="position-10-6" (click)="goTo('10-6')"></div>
+           <div class="arrow-down center" id="position-10-7" (click)="goTo('10-7')"></div>
+           <div class="arrow-up center" id="position-10-8" (click)="goTo('10-8')"></div>
+           <div class="arrow-down center" id="position-10-9" (click)="goTo('10-9')"></div>
+           <div class="arrow-up center" id="position-10-10" (click)="goTo('10-10')"></div>
+           <div class="arrow-down center" id="position-10-11" (click)="goTo('10-11')"></div>
+           <div class="arrow-up center" id="position-10-12" (click)="goTo('10-12')"></div>
+           <div class="arrow-down center" id="position-10-13" (click)="goTo('10-13')"></div>
+           <div class="arrow-up center" id="position-10-14" (click)="goTo('10-14')"></div>
+           <div class="arrow-down center" id="position-10-15" (click)="goTo('10-15')"></div>
+           <div class="arrow-up center" id="position-10-16" (click)="goTo('10-16')"></div>
+           <div class="arrow-down center" id="position-10-17" (click)="goTo('10-17')"></div>
+           <div class="arrow-up center" id="position-10-18" (click)="goTo('10-18')"></div>
+           <div class="arrow-down center" id="position-10-19" (click)="goTo('10-19')"></div>
+           <div class="arrow-up center" id="position-10-20" (click)="goTo('10-20')"></div>
+           <div class="arrow-down center" id="position-10-21" (click)="goTo('10-21')"></div>
+
+          <!--Line 11-->
+          <div class="arrow-down center" id="position-11-1" (click)="goTo('11-1')"></div>
+          <div class="arrow-up center" id="position-11-2" (click)="goTo('11-2')"></div>
+          <div class="arrow-down center" id="position-11-3" (click)="goTo('11-3')"></div>
+          <div class="arrow-up center" id="position-11-4" (click)="goTo('11-4')"></div>
+          <div class="arrow-down center" id="position-11-5" (click)="goTo('11-5')"></div>
+          <div class="arrow-up center" id="position-11-6" (click)="goTo('11-6')"></div>
+          <div class="arrow-down center" id="position-11-7" (click)="goTo('11-7')"></div>
+          <div class="arrow-up center" id="position-11-8" (click)="goTo('11-8')"></div>
+          <div class="arrow-down center" id="position-11-9" (click)="goTo('11-9')"></div>
+          <div class="arrow-up center" id="position-11-10" (click)="goTo('11-10')"></div>
+          <div class="arrow-down center" id="position-11-11" (click)="goTo('11-12')"></div>
+          <div class="arrow-up center" id="position-11-12" (click)="goTo('11-13')"></div>
+          <div class="arrow-down center" id="position-11-13" (click)="goTo('11-14')"></div>
+          <div class="arrow-up center" id="position-11-14" (click)="goTo('11-15')"></div>
+          <div class="arrow-down center" id="position-11-15" (click)="goTo('11-16')"></div>
+          <div class="arrow-up center" id="position-11-16" (click)="goTo('11-17')"></div>
+          <div class="arrow-down center" id="position-11-17" (click)="goTo('11-18')"></div>
+          <div class="arrow-up center" id="position-11-18" (click)="goTo('11-19')"></div>
+          <div class="arrow-down center" id="position-11-19" (click)="goTo('11-20')"></div>
+
+          <div padding class="row dados-jogo">
+            <div class="col">
+              Player 1: 100 pts
+            </div>
+            <div class="col">
+              Player 2: 40 pts
+            </div>
+          </div>
+      </div>
+
+      <div class="batePapo" *ngIf="chatVisible" id="bp">
+        
+        <div (click)="toogleChat()" padding="5px">
+          Bate-Papo
+          <div style="text-align: right;cursor:pointer; margin-top: -20px;">
+            <ion-icon name="close" ></ion-icon>          
+          </div>
+          <hr>
+        </div>
+        <div class="container-bate-papo">
+         
+          <br>
+          <div class="message-wrap">
+            <div *ngFor="let msg of msgList"
+                class="message"
+                [class.left]=" msg.userId === toUser.id "
+                [class.right]=" msg.userId === user.id ">
+              <img class="user-img" [src]="msg.userAvatar" alt="" src="">
+              <ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>
+              <div class="msg-detail">
+                <div class="msg-info">
+                  <p>
+                    {{msg.userName}}&nbsp;&nbsp;&nbsp;{{msg.time | relativeTime}}</p>
+                </div>
+                <div class="msg-content">
+                  <span class="triangle"></span>
+                  <p class="line-breaker ">{{msg.message}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
+          <div class="input-wrap">
+            <button ion-button clear icon-only item-right (click)="switchEmojiPicker()">
+              <ion-icon name="md-happy"></ion-icon>
+            </button>
+            <textarea #chat_input
+                      placeholder="Converse com o oponente"
+                      [(ngModel)]="editorMsg"
+                      (keyup.enter)="sendMsg()"
+                      (focusin)="onFocus()">
+            </textarea>
+            <button ion-button clear icon-only item-right (click)="sendMsg()">
+              <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
+            </button>
+          </div>
+          <!--emoji-picker [(ngModel)]="editorMsg"></!--emoji-picker-->
+        </ion-footer>
+      </div>
+
+      <div class="batePapo" *ngIf="!chatVisible">
+        <div style="padding: 10px;"  (click)="toogleChat()">
+          Converse com seu oponente
+          <button ion-button color="primary">
+            <ion-icon name="chatboxes"></ion-icon>
+          </button>
+        </div>
+        
+      </div>
+</ion-content>

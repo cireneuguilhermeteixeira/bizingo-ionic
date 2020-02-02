@@ -9,14 +9,16 @@ import { TabuleiroService } from '../../providers/tabuleiro-service';
 
 @IonicPage()
 @Component({
-  selector: 'page-signup',
-  templateUrl: 'signup.html'
+  selector: 'page-game',
+  templateUrl: 'game.html'
 })
-export class SignupPage {
+export class GamePage {
+
   pecasPlayer1: Array<PecaTabuleiro> = [];
   pecasPlayer2: Array<PecaTabuleiro> = [];
+  pecaSelecionada: PecaTabuleiro = null;
 
-  chatVisible = true;
+  chatVisible = false;
   heightScreen = 100;
   @ViewChild(Content) content: Content;
   @ViewChild('chat_input') messageInput: ElementRef;
@@ -82,14 +84,17 @@ export class SignupPage {
   getPecasP1(){
     this.tabuleiroService.getPecasPLayer1()
     .subscribe(res=> {
-      console.log('res',res);
-      
-      this.pecasPlayer1 = res});
+      this.pecasPlayer1 = res;
+      this.tabuleiroService.posicionarPecasPlayer1(this.pecasPlayer1);
+    });
   }
 
   getPecasP2(){
     this.tabuleiroService.getPecasPLayer2()
-    .subscribe(res=> this.pecasPlayer2 = res);
+    .subscribe(res=>{ 
+      this.pecasPlayer2 = res 
+      this.tabuleiroService.posicionarPecasPlayer2(this.pecasPlayer2);
+    });
   }
 
 
@@ -201,14 +206,22 @@ export class SignupPage {
     textarea.scrollTop = textarea.scrollHeight;
   }
 
-  prepareToMove(peca:PecaTabuleiro){    
-    let pixelLeft = Number(peca.cssProperty["margin-left"].split('px')[0]);
-    let pixelTop = Number(peca.cssProperty["margin-top"].split('px')[0]);
-    pixelLeft = pixelLeft + 20;
-    pixelTop = pixelTop + 20;
-    peca.cssProperty["margin-left"] = pixelLeft+'px';
-    peca.cssProperty["margin-top"] = pixelTop+'px';
-    //element.classList.add('animated', 'bounceOutLeft')
+  prepareToMove(peca:PecaTabuleiro){ 
+    this.pecaSelecionada = peca;
+    console.log(this.pecaSelecionada);
+    
+  }
+  
+  
+  goTo(location){
+    this.pecaSelecionada = this.tabuleiroService.movimentarPeca(location,this.pecaSelecionada,this.pecasPlayer1.concat(this.pecasPlayer2));
+    if(this.pecaSelecionada.player == 1){
+      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1,this.pecasPlayer2);
+      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
+    }else{
+      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
+      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1, this.pecasPlayer2);
+    }
   }
   
 }

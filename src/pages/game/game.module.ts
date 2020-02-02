@@ -4,19 +4,19 @@ import { IonicPageModule } from 'ionic-angular';
 import { RelativeTime } from "../../pipes/relative-time";
 import { ChatService } from "../../providers/chat-service";
 import {TabuleiroService} from "../../providers/tabuleiro-service";
-import { SignupPage } from './signup';
+import { GamePage } from './game';
 
 @NgModule({
   declarations: [
-    SignupPage,
+    GamePage,
     RelativeTime,
   ],
   imports: [
-    IonicPageModule.forChild(SignupPage),
+    IonicPageModule.forChild(GamePage),
     TranslateModule.forChild()
   ],
   exports: [
-    SignupPage
+    GamePage
   ],
   providers: [
     ChatService,

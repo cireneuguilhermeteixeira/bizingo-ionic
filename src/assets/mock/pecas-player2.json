@@ -2,9 +2,11 @@
   "array":[
     
     {
-      "x":0, 
-      "y":0,
+      "id":19,
+      "x":8, 
+      "y":4,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -13,9 +15,11 @@
 
     
     {
-      "x":0, 
-      "y":0,
+      "id":20,
+      "x":8, 
+      "y":6,
       "player":2,
+      "type":"captain",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -24,9 +28,11 @@
 
 
     {
-      "x":0, 
-      "y":0,
+      "id":21,
+      "x":8, 
+      "y":8,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -34,9 +40,11 @@
     },
 
     {
-      "x":0, 
-      "y":0,
+      "id":22,
+      "x":8, 
+      "y":10,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -44,9 +52,11 @@
     },
 
     {
-      "x":0, 
-      "y":0,
+      "id":23,
+      "x":8, 
+      "y":12,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -54,9 +64,11 @@
     },
 
     {
-      "x":0, 
-      "y":0,
+      "id":24,
+      "x":8, 
+      "y":14,
       "player":2,
+      "type":"captain",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -65,9 +77,11 @@
 
 
     {
-      "x":0, 
-      "y":0,
+      "id":25,
+      "x":8, 
+      "y":16,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -75,9 +89,11 @@
     },
 
     {
-      "x":0, 
-      "y":0,
+      "id":26,
+      "x":9, 
+      "y":6,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -85,9 +101,11 @@
     },
 
     {
-      "x":0, 
-      "y":0,
+      "id":27,
+      "x":9, 
+      "y":8,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -95,42 +113,11 @@
     },
 
     {
-      "x":0, 
-      "y":0,
+      "id":28,
+      "x":9, 
+      "y":10,
       "player":2,
-      "cssProperty":{
-        "margin-top":"0 px",
-        "margin-left":"0 px"
-      }
-    },
-
-    
-    {
-      "x":0, 
-      "y":0,
-      "player":2,
-      "cssProperty":{
-        "margin-top":"0 px",
-        "margin-left":"0 px"
-      }
-    },
-
-    
-    {
-      "x":0, 
-      "y":0,
-      "player":2,
-      "cssProperty":{
-        "margin-top":"0 px",
-        "margin-left":"0 px"
-      }
-    },
-
-    
-    {
-      "x":0, 
-      "y":0,
-      "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -139,9 +126,11 @@
 
     
     {
-      "x":0, 
-      "y":0,
+      "id":29,
+      "x":9, 
+      "y":12,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -150,9 +139,11 @@
 
     
     {
-      "x":0, 
-      "y":0,
+      "id":30,
+      "x":9, 
+      "y":14,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -161,9 +152,11 @@
 
     
     {
-      "x":0, 
-      "y":0,
+      "id":31,
+      "x":9, 
+      "y":16,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -172,9 +165,11 @@
 
     
     {
-      "x":0, 
-      "y":0,
+      "id":32,
+      "x":10, 
+      "y":7,
       "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
@@ -183,9 +178,50 @@
 
     
     {
-      "x":0, 
-      "y":0,
+      "id":33,
+      "x":10, 
+      "y":9,
       "player":2,
+      "type":"regular",
+      "cssProperty":{
+        "margin-top":"0 px",
+        "margin-left":"0 px"
+      }
+    },
+
+    
+    {
+      "id":34,
+      "x":10, 
+      "y":11,
+      "player":2,
+      "type":"regular",
+      "cssProperty":{
+        "margin-top":"0 px",
+        "margin-left":"0 px"
+      }
+    },
+
+    
+    {
+      "id":35,
+      "x":10, 
+      "y":13,
+      "player":2,
+      "type":"regular",
+      "cssProperty":{
+        "margin-top":"0 px",
+        "margin-left":"0 px"
+      }
+    },
+
+    
+    {
+      "id":36,
+      "x":10, 
+      "y":15,
+      "player":2,
+      "type":"regular",
       "cssProperty":{
         "margin-top":"0 px",
         "margin-left":"0 px"
