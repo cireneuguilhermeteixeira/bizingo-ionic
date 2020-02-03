@@ -67,7 +67,7 @@ page-game {
   .my-container{
     position:center;
     padding:20px;
-    max-width: $size*30;
+    //max-width: $size*30;
   }
 
 
@@ -75,17 +75,43 @@ page-game {
     margin-top: $size*12;
   }
 
+  .card-style{
+    z-index: 10;
+    max-width: 400px;
+    position: fixed;
+    right: 0;
+  }
 
+  .title-card{
+    z-index: 10;
+    text-align: right;
+    //max-width: 400px;
+  }
+
+
+  .desistencia{
+    z-index: 10;
+    max-width: 400px;
+    position: fixed;
+    right: 0;
+    margin-top: 100px;
+  }
+
+  .card-style button{
+      font-size: 10px;
+  }
+
+  
   //CSS chat
 
   .batePapo {
-    z-index: 10;
+    z-index: 100;
     color: #273443;
     background-color:#fff;
     border-radius:10px;
     max-width: 350px;
     position: fixed;
-    right: 0;
+    right: 10px;
     bottom:0;
     
 
