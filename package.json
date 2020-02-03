@@ -33,7 +33,10 @@
     "ng2-dragula": "^2.1.1",
     "rxjs": "5.5.11",
     "sw-toolbox": "3.6.0",
-    "zone.js": "0.8.29"
+    "zone.js": "0.8.29",
+    "@ionic/app-scripts": "3.2.4",
+    "babel-plugin-date-fns": "^2.0.0",
+    "typescript": "2.6.2"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.4",
