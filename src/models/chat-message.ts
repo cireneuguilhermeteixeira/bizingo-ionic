@@ -6,6 +6,5 @@ export class ChatMessage {
     toUserId: string;
     time: number | string;
     message: string;
-    status: string;
     toUserName: string;
   }

@@ -54,9 +54,8 @@ export class ChatService {
       userName: msg.userName,
       toUserName:'Teste',
       toUserId: '140000198202211138',
-      time: Date.now(),
+      time: new Date().toLocaleString(),
       message: msg.message,
-      status: 'success'
     };
 
     setTimeout(() => {
@@ -71,7 +70,7 @@ export class ChatService {
   }
 
   sendMsg(msg: ChatMessage) {
-    return new Promise(resolve => setTimeout(() => resolve(this.messages.next(msg)), Math.random() * 1000))
+    return new Promise(resolve => setTimeout(() => this.messages.next(msg), Math.random() * 1000))
     //.then(() => this.mockNewMsg(msg));
   }
 

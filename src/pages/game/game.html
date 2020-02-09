@@ -23,7 +23,7 @@
                   class="part-player-1"
                   [title]="'peça '+(i+1)+' - (player 1)'">
 
-                  <div class="inside-player-1"></div>
+                  <div *ngIf="pecaPlayer1 != pecaSelecionada" class="inside-player-1"></div>
                 </div>
               </div>  
               <!--Peças player 2-->
@@ -37,7 +37,7 @@
                 class="part-player-2"
                 [title]="'peça '+(i+1)+' - (player 2)'">
 
-                  <div class="inside-player-2"></div>
+                  <div *ngIf="pecaPlayer2 != pecaSelecionada" class="inside-player-2"></div>
                 </div>
               </div> 
           
@@ -231,7 +231,7 @@
           </ion-col>
           <ion-col style="margin-left: 600px;">
               <div class="title-card">
-                <h2>Player 1</h2>
+                <h2>Player 1 <span *ngIf="playerType == '1'">(Você - {{name}})</span></h2>
               </div>
               <ion-card class="card-style">                
                 <ion-row>
@@ -260,7 +260,7 @@
                 <br>
                 <br>
                 <div class="title-card" *ngIf="isReadyToplay">
-                  <h2>Player 2</h2>
+                  <h2>Player 2 <span *ngIf="playerType == '2'">(Você - {{name}})</span></h2>
                 </div>
                 <ion-card class="card-style" *ngIf="isReadyToplay">
                 <ion-row>
@@ -284,78 +284,82 @@
                 </ion-row>
               </ion-card>
 
-              <ion-card class="desistencia">
-                <button ion-button color="danger" (click)="sendSocketMsg()" clear small icon-start>
-                    Envia msg pra socket
+              <ion-card class="desistencia" *ngIf="isReadyToplay">
+                <button ion-button color="danger" clear small icon-start>
+                    Desistir
                 </button>
               </ion-card>
           </ion-col>
         </ion-row>
       </ion-grid>
       </div>
-      <div class="batePapo" *ngIf="chatVisible" id="bp">
-        
-        <div (click)="toogleChat()" padding="5px">
-          Bate-Papo
-          <div style="text-align: right;cursor:pointer; margin-top: -20px;">
-            <ion-icon name="close" ></ion-icon>          
-          </div>
-          <hr>
-        </div>
-        <div class="container-bate-papo">
-         
-          <br>
-          <div class="message-wrap">
-            <div *ngFor="let msg of msgList"
-                class="message"
-                [class.left]=" msg.userId === toUser.id "
-                [class.right]=" msg.userId === user.id ">
-              <img class="user-img" [src]="msg.userAvatar" alt="" src="">
-              <ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>
-              <div class="msg-detail">
-                <div class="msg-info">
-                  <p>
-                    {{msg.userName}}&nbsp;&nbsp;&nbsp;{{msg.time | relativeTime}}</p>
-                </div>
-                <div class="msg-content">
-                  <span class="triangle"></span>
-                  <p class="line-breaker ">{{msg.message}}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
-          <div class="input-wrap">
-            <button ion-button clear icon-only item-right (click)="switchEmojiPicker()">
-              <ion-icon name="md-happy"></ion-icon>
-            </button>
-            <textarea #chat_input
-                      placeholder="Converse com o oponente"
-                      [(ngModel)]="editorMsg"
-                      (keyup.enter)="sendMsg()"
-                      (focusin)="onFocus()">
-            </textarea>
-            <button ion-button clear icon-only item-right (click)="sendMsg()">
-              <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
-            </button>
-          </div>
-          <!--emoji-picker [(ngModel)]="editorMsg"></!--emoji-picker-->
-        </ion-footer>
-      </div>
-
-      <div class="batePapo" *ngIf="!chatVisible">
-        <div style="padding: 10px;"  (click)="toogleChat()">
-          Converse com seu oponente
-          <button ion-button color="primary">
-            <ion-icon name="chatboxes"></ion-icon>
-          </button>
-        </div>
-        
-      </div>
+     
 </ion-content>
 
 <ion-content text-center *ngIf="!isConnected">
   <ion-spinner class="loading-list"></ion-spinner>
 </ion-content>
+
+
+<div *ngIf="isConnected">
+  <div class="batePapo" *ngIf="chatVisible" id="bp">
+        
+    <div (click)="toogleChat()" padding="5px">
+      Bate-Papo
+      <div style="text-align: right;cursor:pointer; margin-top: -20px;">
+        <ion-icon name="close" ></ion-icon>          
+      </div>
+      <hr>
+    </div>
+    <div class="container-bate-papo" id="messagewrap" #messagewrap>  
+      <br>
+      <div class="message-wrap">
+        <div *ngFor="let msg of msgList"
+            class="message"
+            [class.left]=" msg.userId === toUser.id "
+            [class.right]=" msg.userId === user.id ">
+          <img class="user-img" [src]="msg.userAvatar" alt="" src="">
+          <div class="msg-detail">
+            <div class="msg-info">
+              <p>
+                {{msg.userName}}&nbsp;&nbsp;{{msg.time }}</p>
+            </div>
+            <div class="msg-content">
+              <span class="triangle"></span>
+              <p class="line-breaker ">{{msg.message}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
+      <div class="input-wrap">
+        <button ion-button clear icon-only item-right (click)="switchEmojiPicker()">
+          <ion-icon name="md-happy"></ion-icon>
+        </button>
+        <textarea #chat_input
+                  id="chat_input"
+                  placeholder="Converse com o oponente"
+                  [(ngModel)]="editorMsg"
+                  (keyup.enter)="sendMsg()"
+                  (focusin)="onFocus()">
+        </textarea>
+        <button ion-button clear icon-only item-right (click)="sendMsg()">
+          <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
+        </button>
+      </div>
+      <emoji-picker [(ngModel)]="editorMsg"></emoji-picker>
+    </div>
+  </div>
+
+  <div class="batePapo" *ngIf="!chatVisible">
+    <div style="padding: 5px; text-align: center;"  (click)="toogleChat()">
+      Converse com seu oponente
+      <button ion-button color="primary">
+        <ion-icon name="chatboxes"></ion-icon>
+      </button>
+    </div>    
+  </div>
+
+</div>

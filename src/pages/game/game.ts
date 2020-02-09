@@ -33,7 +33,7 @@ export class GamePage {
 
   chatVisible = true;
   heightScreen = 100;
-  @ViewChild(Content) content: Content;
+  @ViewChild('messagewrap') content: Content;
   @ViewChild('chat_input') messageInput: ElementRef;
   msgList: ChatMessage[] = [];
   user: UserInfo;
@@ -165,8 +165,8 @@ export class GamePage {
 
   onFocus() {
     this.showEmojiPicker = false;
-    this.content.resize();
-    //this.scrollToBottom();
+    //this.content.resize();
+    this.scrollToBottom();
   }
 
   switchEmojiPicker() {
@@ -176,8 +176,8 @@ export class GamePage {
     } else {
       this.setTextareaScroll();
     }
-    this.content.resize();
-    //this.scrollToBottom();
+    //this.content.resize();
+    this.scrollToBottom();
   }
 
 
@@ -189,17 +189,16 @@ export class GamePage {
     return this.chatService.getMsgList()
     .subscribe((res) => {
       this.msgList = res;
-      //this.scrollToBottom();
+      this.scrollToBottom();
     });
   }
 
-  
+    
 
   sendMsg() {
     if (!this.editorMsg.trim()) return;
 
     // Mock message
-    const id = Date.now().toString();
     let newMsg = {
       typeMessage:'userMessage',
       messageId: Date.now().toString(),
@@ -207,9 +206,8 @@ export class GamePage {
       toUserName:this.toUser.name,
       userName: this.name,
       toUserId: this.toUser.id,
-      time: Date.now(),
+      time: new Date().toLocaleString(),
       message: this.editorMsg,
-      status: 'pending'
     };
 
     this.pushNewMsg(newMsg);
@@ -218,14 +216,8 @@ export class GamePage {
     if (!this.showEmojiPicker) {
       this.focus();
     }
-
     this.chatService.sendMsg(newMsg)
-    .then(() => {
-      let index = this.getMsgIndexById(id);
-      if (index !== -1) {
-        this.msgList[index].status = 'success';
-      }
-    })
+  
   }
 
   
@@ -239,7 +231,7 @@ export class GamePage {
     } else if (msg.toUserId === userId && msg.userId === toUserId) {
       this.msgList.push(msg);
     }
-    //this.scrollToBottom();
+    this.scrollToBottom();
   }
 
   getMsgIndexById(id: string) {
@@ -250,14 +242,17 @@ export class GamePage {
 
 
   scrollToBottom() {
-    //this.content = document.getElementById('bp');
-    //var messagesContent = this.app as Content;
-    //messagesContent.scrollTo(0, messagesContent.getContentDimensions().contentHeight, 700);
-    setTimeout(() => {
-      if (this.content && this.content.scrollToBottom) {
-        this.content.scrollToBottom();
-      }
-    }, 400)
+    
+    let content = document.getElementById('messagewrap');
+    if(content){
+       content.scrollTop = content.scrollHeight - content.clientHeight;
+       setTimeout(() => {
+          if (content && content.scrollTop) {
+            content.scrollTop = content.scrollHeight - content.clientHeight;
+          }
+        }, 10)
+    }
+
   }
 
   private focus() {
@@ -273,8 +268,15 @@ export class GamePage {
 
   prepareToMove(peca:PecaTabuleiro){ 
     if(this.isReadyToplay){
-      this.pecaSelecionada = peca;
-      console.log(this.pecaSelecionada);
+      if(this.playerType =='1'){
+        if(peca.player == 1){
+          this.pecaSelecionada = peca;
+        }
+      }else if(this.playerType == '2'){
+        if(peca.player == 2){
+          this.pecaSelecionada = peca;          
+        }
+      }
     }
     
   }
@@ -291,29 +293,10 @@ export class GamePage {
           this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
           this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1, this.pecasPlayer2);
         }
+        this.pecaSelecionada = null;
       }  
     }
     
-  }
-
-
-
-  private message = 
-  {
-    "typeMessage":"userMessage",
-    "messageId": "3",
-    "userId": "140000198202211138",
-    "userName": "Luff",
-    "toUserId": "210000198410281948",
-    "toUserName": "Hancock",
-    "time": "1491034920000",
-    "message": "Esta é uma mensagem teste",
-    "status": "success"
-  };
-
-  sendSocketMsg() {
-    console.log("new message from client to websocket: ", this.message);
-    this.chatService.messages.next((this.message));
   }
 
 }

@@ -104,6 +104,7 @@ page-game {
   
   //CSS chat
 
+
   .batePapo {
 
     z-index: 100;
@@ -114,7 +115,7 @@ page-game {
     position: fixed;
     right: 10px;
     bottom:0;
-    
+    margin-right: 10px;
 
   }
 
@@ -127,7 +128,6 @@ page-game {
   .container-bate-papo{
     overflow-y:scroll;
     height:$size*10;
-    margin-bottom: 50px;
   }
 
 
@@ -153,6 +153,7 @@ page-game {
   }
 
   .message-wrap {
+    margin-bottom: 10px;
     padding: 0 10px;
     .message {
       position: relative;

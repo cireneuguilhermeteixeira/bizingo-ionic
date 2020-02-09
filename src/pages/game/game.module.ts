@@ -6,6 +6,9 @@ import { ChatService } from "../../providers/chat-service";
 import {TabuleiroService} from "../../providers/tabuleiro-service";
 import { GamePage } from './game';
 import {WebsocketService} from '../../providers/websocket-service';
+import { EmojiService } from "../../providers/emoji";
+import { EmojiPickerComponentModule } from "../../components/emoji-picker/emoji-picker.module";
+
 
 @NgModule({
   declarations: [
@@ -13,6 +16,7 @@ import {WebsocketService} from '../../providers/websocket-service';
     RelativeTime,
   ],
   imports: [
+    EmojiPickerComponentModule,
     IonicPageModule.forChild(GamePage),
     TranslateModule.forChild()
   ],
@@ -20,6 +24,7 @@ import {WebsocketService} from '../../providers/websocket-service';
     GamePage
   ],
   providers: [
+    EmojiService,
     ChatService,
     TabuleiroService,
     WebsocketService
