@@ -6,6 +6,8 @@ import { ChatMessage } from '../../models/chat-message';
 import { ChatService } from '../../providers/chat-service';
 import {PecaTabuleiro} from '../../models/peca-tabuleiro';
 import { TabuleiroService } from '../../providers/tabuleiro-service';
+import swal from 'sweetalert2'
+
 
 @IonicPage()
 @Component({
@@ -14,11 +16,22 @@ import { TabuleiroService } from '../../providers/tabuleiro-service';
 })
 export class GamePage {
 
+  customClass = {
+    content:'sweet_contentImportant',
+    container: 'sweet_containerImportant',
+    title: 'sweet_titleImportant',
+    actions: 'sweet_actionsImportant',
+    confirmButton: 'sweet_confirmbuttonImportant',
+    cancelButton: 'sweet_cancelbuttonImportant',
+  };
+
+  playerType = '';
+  isConnected = false;
   pecasPlayer1: Array<PecaTabuleiro> = [];
   pecasPlayer2: Array<PecaTabuleiro> = [];
   pecaSelecionada: PecaTabuleiro = null;
 
-  chatVisible = false;
+  chatVisible = true;
   heightScreen = 100;
   @ViewChild(Content) content: Content;
   @ViewChild('chat_input') messageInput: ElementRef;
@@ -27,9 +40,9 @@ export class GamePage {
   toUser: UserInfo;
   editorMsg = '';
   showEmojiPicker = false;
-  
+  name = '';
+  isReadyToplay = false;
 
- 
   
   // Our translated text strings
   private signupErrorString: string;
@@ -44,8 +57,7 @@ export class GamePage {
     public navCtrl: NavController,
     public toastCtrl: ToastController,
     public translateService: TranslateService) {
-
-   
+    
     
     this.translateService.get('SIGNUP_ERROR').subscribe((value) => {
       this.signupErrorString = value;
@@ -64,21 +76,73 @@ export class GamePage {
     this.chatVisible = !this.chatVisible;    
   }
 
+  ngOnDestroy(){
+    console.log('saiu da página');
+    
+  }
 
   ionViewWillLeave() {
-    // unsubscribe
-    this.events.unsubscribe('chat:received');
+    this.chatService.closeConnection();
+    //this.events.unsubscribe('chat:received');
   }
 
   ionViewDidEnter() {
     //get message list
-    this.getPecasP1();
-    this.getPecasP2();
-    this.getMsg();
-    // Subscribe to received  new message events
+    
+    this.playerType = this.navParams.get('player');
+    this.name = this.navParams.get('name');
+    if(!this.playerType || !this.name){
+      this.navCtrl.setRoot('WelcomePage');
+    }
+    this.initializeSocket(this.playerType,this.name);
+    //this.getPecasP2();
+    //this.getMsg();
     this.events.subscribe('chat:received', msg => {
       this.pushNewMsg(msg);
     })
+  }
+
+
+
+  initializeSocket(playerType, name){
+    //Conecta com websocket
+    this.chatService.connect(playerType,name).subscribe(msg => {
+      this.chatService.receiveMessage(msg);
+      
+      if(msg.typeMessage == 'systemMessageNoPlayer1Waiting'){        
+        swal.fire({
+          title:'Ops!',
+          text:'Nenhuma sala disponível.',
+          type:'error',
+          customClass: this.customClass
+        }).then(()=> this.navCtrl.setRoot('WelcomePage'));
+      }
+      if(msg.typeMessage == 'systemMessageStart'){
+        this.getPecasP2();
+        this.isReadyToplay= true;
+      }
+      console.log("Response from websocket: ", msg);      
+      this.isConnected = true;
+      this.getPecasP1();
+    },(err) => {
+        console.log(err);
+        swal.fire({
+          title:'Ops!',
+          text:'Impossível se comunicar com o servidor.',
+          type:'error',
+          customClass: this.customClass
+        }).then(()=> this.navCtrl.setRoot('WelcomePage'))      
+
+
+    },()=>{
+      swal.fire({
+        title:'Ops!',
+        text:'Você perdeu a conexão.',
+        type:'error',
+        customClass: this.customClass
+
+      }).then(()=> this.navCtrl.setRoot('WelcomePage'))      
+    });
   }
 
   getPecasP1(){
@@ -102,7 +166,7 @@ export class GamePage {
   onFocus() {
     this.showEmojiPicker = false;
     this.content.resize();
-    this.scrollToBottom();
+    //this.scrollToBottom();
   }
 
   switchEmojiPicker() {
@@ -113,7 +177,7 @@ export class GamePage {
       this.setTextareaScroll();
     }
     this.content.resize();
-    this.scrollToBottom();
+    //this.scrollToBottom();
   }
 
 
@@ -123,9 +187,9 @@ export class GamePage {
     // Get mock message list
     
     return this.chatService.getMsgList()
-    .subscribe(res => {
+    .subscribe((res) => {
       this.msgList = res;
-      this.scrollToBottom();
+      //this.scrollToBottom();
     });
   }
 
@@ -136,11 +200,12 @@ export class GamePage {
 
     // Mock message
     const id = Date.now().toString();
-    let newMsg: ChatMessage = {
+    let newMsg = {
+      typeMessage:'userMessage',
       messageId: Date.now().toString(),
       userId: this.user.id,
-      userName: this.user.name,
-      userAvatar: this.user.avatar,
+      toUserName:this.toUser.name,
+      userName: this.name,
       toUserId: this.toUser.id,
       time: Date.now(),
       message: this.editorMsg,
@@ -174,7 +239,7 @@ export class GamePage {
     } else if (msg.toUserId === userId && msg.userId === toUserId) {
       this.msgList.push(msg);
     }
-    this.scrollToBottom();
+    //this.scrollToBottom();
   }
 
   getMsgIndexById(id: string) {
@@ -189,7 +254,7 @@ export class GamePage {
     //var messagesContent = this.app as Content;
     //messagesContent.scrollTo(0, messagesContent.getContentDimensions().contentHeight, 700);
     setTimeout(() => {
-      if (this.content.scrollToBottom) {
+      if (this.content && this.content.scrollToBottom) {
         this.content.scrollToBottom();
       }
     }, 400)
@@ -207,21 +272,49 @@ export class GamePage {
   }
 
   prepareToMove(peca:PecaTabuleiro){ 
-    this.pecaSelecionada = peca;
-    console.log(this.pecaSelecionada);
+    if(this.isReadyToplay){
+      this.pecaSelecionada = peca;
+      console.log(this.pecaSelecionada);
+    }
     
   }
   
   
   goTo(location){
-    this.pecaSelecionada = this.tabuleiroService.movimentarPeca(location,this.pecaSelecionada,this.pecasPlayer1.concat(this.pecasPlayer2));
-    if(this.pecaSelecionada.player == 1){
-      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1,this.pecasPlayer2);
-      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
-    }else{
-      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
-      this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1, this.pecasPlayer2);
+    if(this.isReadyToplay){
+      this.pecaSelecionada = this.tabuleiroService.movimentarPeca(location,this.pecaSelecionada,this.pecasPlayer1.concat(this.pecasPlayer2));
+      if(this.pecaSelecionada){
+        if(this.pecaSelecionada.player == 1){
+          this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1,this.pecasPlayer2);
+          this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
+        }else{
+          this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
+          this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1, this.pecasPlayer2);
+        }
+      }  
     }
+    
   }
-  
+
+
+
+  private message = 
+  {
+    "typeMessage":"userMessage",
+    "messageId": "3",
+    "userId": "140000198202211138",
+    "userName": "Luff",
+    "toUserId": "210000198410281948",
+    "toUserName": "Hancock",
+    "time": "1491034920000",
+    "message": "Esta é uma mensagem teste",
+    "status": "success"
+  };
+
+  sendSocketMsg() {
+    console.log("new message from client to websocket: ", this.message);
+    this.chatService.messages.next((this.message));
+  }
+
 }
+

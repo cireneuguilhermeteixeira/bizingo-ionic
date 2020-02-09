@@ -31,13 +31,17 @@
     "ionicons": "3.0.0",
     "ng2-dragula": "^2.1.1",
     "rxjs": "5.5.11",
+    "sockjs-client": "^1.4.0",
+    "stompjs": "^2.3.3",
+    "sweetalert2": "8.14.0",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.29"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^0.13.2",
     "@ionic/app-scripts": "3.2.4",
     "babel-plugin-date-fns": "^2.0.0",
-    "typescript": "2.6.2"
+    "typescript": "2.9.2"
   },
   "description": "An Ionic project"
 }

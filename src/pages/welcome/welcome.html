@@ -3,11 +3,12 @@
   <div class="splash-info">
     <div class="splash-logo"></div>
     <div class="splash-intro">
-      {{ 'WELCOME_INTRO' | translate }}
+      Vamos começar a jogar. Aqui você tem duas opções.
     </div>
   </div>
   <div padding>
-    <button ion-button block (click)="signup()">{{ 'SIGNUP' | translate }}</button>
-    <button ion-button block (click)="login()" class="login">{{ 'LOGIN' | translate }}</button>
+    <button ion-button block (click)="creteMatch()" title="Player 1">Criar uma sala</button>
+    <br>
+    <button ion-button block color="secondary" (click)="enterInMatch()" title="Player 2">Buscar uma sala</button>
   </div>
 </ion-content>

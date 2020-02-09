@@ -1,26 +1,92 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
+import swal from 'sweetalert2'
 
-/**
- * The Welcome Page is a splash page that quickly describes the app,
- * and then directs the user to create an account or log in.
- * If you'd like to immediately put the user onto a login/signup page,
- * we recommend not using the Welcome page.
-*/
+
 @IonicPage()
 @Component({
   selector: 'page-welcome',
   templateUrl: 'welcome.html'
 })
 export class WelcomePage {
-
+  name = 'Cireneu';
+  customClass = {
+    content:'sweet_contentImportant',
+    container: 'sweet_containerImportant',
+    title: 'sweet_titleImportant',
+    actions: 'sweet_actionsImportant',
+    confirmButton: 'sweet_confirmbuttonImportant',
+    cancelButton: 'sweet_cancelbuttonImportant',
+  };
   constructor(public navCtrl: NavController) { }
 
-  login() {
-    this.navCtrl.push('LoginPage');
+  creteMatch() {
+
+    swal.fire({
+      title: 'Criando uma partida',
+      text: 'Quando você cria uma partida, você será o Player 1 e terá que esperar que algúem entre na sua sala por ordem de prioridade. Informe seu nome abaixo.',
+      type: 'question',
+      input:'text',
+      confirmButtonText: 'Continuar',
+      confirmButtonColor: '#20A6C3',
+      allowOutsideClick: false,
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      customClass: this.customClass
+
+    }).then((result) => {      
+      if (result.value) {
+        this.navCtrl.setRoot('GamePage',{
+          player:"1",
+          name:result.value
+        });
+      
+      
+      }else if(!result.dismiss){
+        swal.fire({
+          title:'Erro!',
+          text:'Informe seu nome.',
+          type:'error',
+          customClass: this.customClass
+        })
+        
+      }
+    })
   }
 
-  signup() {
-    this.navCtrl.push('GamePage');
+
+  enterInMatch(){
+
+    swal.fire({
+      title: 'Buscar uma partida',
+      text: 'Quando você procura uma partida, você será o Player 2 e só conseguirá jogar se houver algum player 1 esperando para jogar.',
+      type: 'question',
+      input:'text',
+      confirmButtonText: 'Continuar',
+      confirmButtonColor: '#20A6C3',
+      allowOutsideClick: false,
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      customClass: this.customClass
+
+    }).then((result) => {      
+      if (result.value) {
+        this.navCtrl.setRoot('GamePage',{
+          player:"2",
+          name:result.value
+        });
+      
+      
+      }else if(!result.dismiss){
+        swal.fire({
+          title:'Erro!',
+          text:'Informe seu nome.',
+          type:'error',
+          customClass: this.customClass
+        })
+        
+      }
+    })
+
   }
 }

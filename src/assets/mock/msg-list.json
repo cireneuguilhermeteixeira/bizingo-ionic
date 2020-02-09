@@ -4,10 +4,8 @@
       "messageId":"1",
       "userId":"140000198202211138",
       "userName":"Luff",
-      "userImgUrl":"./assets/user.jpg",
       "toUserId":"210000198410281948",
       "toUserName":"Hancock",
-      "userAvatar":"./assets/to-user.jpg",
       "time":1488349800000,
       "message":"Olá, tudo bem?",
       "status":"success"
@@ -17,10 +15,8 @@
       "messageId":"2",
       "userId":"210000198410281948",
       "userName":"Hancock",
-      "userImgUrl":"./assets/to-user.jpg",
       "toUserId":"140000198202211138",
       "toUserName":"Luff",
-      "userAvatar":"./assets/user.jpg",
       "time":1491034800000,
       "message":"Tudo e com vc?",
       "status":"success"
@@ -29,10 +25,8 @@
       "messageId":"3",
       "userId":"140000198202211138",
       "userName":"Luff",
-      "userImgUrl":"./assets/user.jpg",
       "toUserId":"210000198410281948",
       "toUserName":"Hancock",
-      "userAvatar":"./assets/to-user.jpg",
       "time":1491034920000,
       "message":"Por aqui ta tudo tranquilo. Vai, agora é tua vez...",
       "status":"success"

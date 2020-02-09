@@ -105,11 +105,12 @@ page-game {
   //CSS chat
 
   .batePapo {
+
     z-index: 100;
     color: #273443;
     background-color:#fff;
     border-radius:10px;
-    max-width: 350px;
+    width: 350px;
     position: fixed;
     right: 10px;
     bottom:0;
@@ -118,13 +119,14 @@ page-game {
   }
 
   ion-content .scroll-content {
+    margin-top: $size;
     background-color: #273443;
     color: white;
   }
 
   .container-bate-papo{
     overflow-y:scroll;
-    height:$size*15;
+    height:$size*10;
     margin-bottom: 50px;
   }
 

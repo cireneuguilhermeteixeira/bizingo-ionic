@@ -7,7 +7,7 @@
 </ion-header>
 
 
-<ion-content text-center >
+<ion-content text-center *ngIf="isConnected"  padding>
  
       <div class="my-container">
         <ion-grid>
@@ -229,7 +229,7 @@
                 </div>
               </div>
           </ion-col>
-          <ion-col size="5">
+          <ion-col style="margin-left: 600px;">
               <div class="title-card">
                 <h2>Player 1</h2>
               </div>
@@ -259,10 +259,10 @@
                 <br>
                 <br>
                 <br>
-                <div class="title-card">
+                <div class="title-card" *ngIf="isReadyToplay">
                   <h2>Player 2</h2>
                 </div>
-                <ion-card class="card-style">
+                <ion-card class="card-style" *ngIf="isReadyToplay">
                 <ion-row>
                   <ion-col style="width: 10px;">
                     <button ion-button color="primary" clear small icon-start>
@@ -285,8 +285,8 @@
               </ion-card>
 
               <ion-card class="desistencia">
-                <button ion-button color="danger" clear small icon-start>
-                    Desistir?
+                <button ion-button color="danger" (click)="sendSocketMsg()" clear small icon-start>
+                    Envia msg pra socket
                 </button>
               </ion-card>
           </ion-col>
@@ -326,9 +326,6 @@
           </div>
         </div>
 
-
-
-
         <ion-footer no-border [style.height]="showEmojiPicker ? '255px' : '55px'">
           <div class="input-wrap">
             <button ion-button clear icon-only item-right (click)="switchEmojiPicker()">
@@ -357,4 +354,8 @@
         </div>
         
       </div>
+</ion-content>
+
+<ion-content text-center *ngIf="!isConnected">
+  <ion-spinner class="loading-list"></ion-spinner>
 </ion-content>
