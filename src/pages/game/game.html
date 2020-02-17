@@ -289,6 +289,12 @@
                     Desistir
                 </button>
               </ion-card>
+
+              <ion-card class="desistencia" *ngIf="isReadyToplay">
+                <button ion-button color="secondary" clear small icon-start (click)="reiniciarPartida()">
+                    Reiniciar Partida
+                </button>
+              </ion-card>
           </ion-col>
         </ion-row>
       </ion-grid>

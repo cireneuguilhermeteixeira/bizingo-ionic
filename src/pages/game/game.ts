@@ -363,7 +363,7 @@ export class GamePage {
           customClass: this.customClass
         }).then(()=> this.navCtrl.setRoot('WelcomePage'))
         
-      
+    
       }
   
     })
@@ -435,6 +435,48 @@ export class GamePage {
         this.modalPerdedor();
       }
     }
+  }
+
+  reiniciarPartida(){
+    if(this.playerType=='1'){
+      swal.fire({
+        title: 'Reiniciar partida?',
+        text: 'Tem certeza que deseja reiniciar a partida?',
+        type: 'question',
+        confirmButtonText: 'Continuar',
+        confirmButtonColor: '#20A6C3',
+        allowOutsideClick: false,
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        customClass: this.customClass
+  
+      }).then((result) => {      
+        if (result.value) {
+          this.getPecasP1();
+          this.getPecasP2();
+          this.vezDo = 1;
+          this.isReadyToplay = true;
+          swal.fire({
+            title:'Ok!',
+            text:'Partida reiniciada.',
+            type:'success',
+            customClass: this.customClass
+          }).then(()=> this.emitirEventoMovimentarPeca(this.pecasPlayer1,this.pecasPlayer2,this.vezDo))
+          
+      
+        }
+    
+      })
+      
+    }else{
+      swal.fire({
+        title:'Ops!',
+        text:'Apenas o player 1 pode reiniciar a partida.',
+        type:'error',
+        customClass: this.customClass
+      })
+    }
+    
   }
 
 }
