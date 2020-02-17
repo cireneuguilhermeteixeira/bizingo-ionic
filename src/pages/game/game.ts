@@ -26,7 +26,7 @@ export class GamePage {
   };
 
   playerType = '';
-  isConnected = false;
+  isConnected = true;
   pecasPlayer1: Array<PecaTabuleiro> = [];
   pecasPlayer2: Array<PecaTabuleiro> = [];
   pecaSelecionada: PecaTabuleiro = null;
@@ -42,7 +42,7 @@ export class GamePage {
   showEmojiPicker = false;
   name = '';
   isReadyToplay = false;
-
+  vezDo = null;
   
   // Our translated text strings
   private signupErrorString: string;
@@ -63,27 +63,17 @@ export class GamePage {
       this.signupErrorString = value;
     })
 
-    // Get the navParams toUserId parameter
-    this.toUser = {id: "210000198410281948", name: "Hancock"};
-    // Get mock user information
-    this.chatService.getUserInfo()
-    .then((res) => {      
-      this.user = res
-    });
+   
   }
 
   toogleChat(){
     this.chatVisible = !this.chatVisible;    
   }
 
-  ngOnDestroy(){
-    console.log('saiu da página');
-    
-  }
+
 
   ionViewWillLeave() {
     this.chatService.closeConnection();
-    //this.events.unsubscribe('chat:received');
   }
 
   ionViewDidEnter() {
@@ -94,55 +84,77 @@ export class GamePage {
     if(!this.playerType || !this.name){
       this.navCtrl.setRoot('WelcomePage');
     }
-    this.initializeSocket(this.playerType,this.name);
-    //this.getPecasP2();
-    //this.getMsg();
+
+    this.initializeSocket();
+    this.user = {
+      id:this.playerType,
+      name:this.name
+    }
+    this.toUser = {
+      id: this.playerType == '1'? '2': '1',
+      name: null
+    };
+   
+   this.getPecas(this.playerType);
     this.events.subscribe('chat:received', msg => {
       this.pushNewMsg(msg);
     })
   }
 
-
-
-  initializeSocket(playerType, name){
-    //Conecta com websocket
-    this.chatService.connect(playerType,name).subscribe(msg => {
-      this.chatService.receiveMessage(msg);
-      
-      if(msg.typeMessage == 'systemMessageNoPlayer1Waiting'){        
-        swal.fire({
-          title:'Ops!',
-          text:'Nenhuma sala disponível.',
-          type:'error',
-          customClass: this.customClass
-        }).then(()=> this.navCtrl.setRoot('WelcomePage'));
-      }
-      if(msg.typeMessage == 'systemMessageStart'){
-        this.getPecasP2();
-        this.isReadyToplay= true;
-      }
-      console.log("Response from websocket: ", msg);      
-      this.isConnected = true;
+  getPecas(p){
+    if(p=='1'){
       this.getPecasP1();
-    },(err) => {
-        console.log(err);
-        swal.fire({
-          title:'Ops!',
-          text:'Impossível se comunicar com o servidor.',
-          type:'error',
-          customClass: this.customClass
-        }).then(()=> this.navCtrl.setRoot('WelcomePage'))      
+    }
+    if(p=='2'){
+      this.getPecasP1();
+      this.getPecasP2();
+      this.isReadyToplay = true;
+      this.vezDo = 1;
+    }
+  }
 
+  initializeSocket(){
 
-    },()=>{
-      swal.fire({
-        title:'Ops!',
-        text:'Você perdeu a conexão.',
-        type:'error',
-        customClass: this.customClass
+    this.chatService.getMessages().subscribe(message => {
+      if( message['message']['typeMessage'] == 'userMessage'){
+        this.pushNewMsg(message['message']);
+      }
 
-      }).then(()=> this.navCtrl.setRoot('WelcomePage'))      
+      if(message['message']['typeMessage'] == 'Sistema'){
+        this.modalVencedor();
+        this.pushNewMsg(message['message']);
+      }
+
+      if(message['message']['typeMessage'] == 'moveMessage'){
+        this.updatePositions(message['message']);
+        this.checaSeTemVencedor();
+      }
     });
+ 
+    this.chatService.getUsers().subscribe(data => {
+      
+      let user = data['user'];
+      if (data['event'] === 'left') {
+        if(user == this.toUser.name){
+          this.sendMsg(true);
+        }
+      } else {
+        this.toUser.id = this.playerType == '1'? '2': '1';
+        this.getPecas(this.toUser.id);
+        this.toUser.name = user;
+        this.isReadyToplay = true;
+        this.vezDo = 1;
+
+        
+      }
+    });
+
+  }
+
+  updatePositions(message){
+    this.pecasPlayer1 = message['pecasP1'];
+    this.pecasPlayer2 = message['pecasP2'];
+    this.vezDo = message['vezDo'];
   }
 
   getPecasP1(){
@@ -182,55 +194,72 @@ export class GamePage {
 
 
 
-
-  getMsg() {
-    // Get mock message list
-    
-    return this.chatService.getMsgList()
-    .subscribe((res) => {
-      this.msgList = res;
-      this.scrollToBottom();
-    });
-  }
-
     
 
-  sendMsg() {
-    if (!this.editorMsg.trim()) return;
+  sendMsg(disconnect:Boolean) {
+    if(disconnect){
+      let newMsg = {
+        userId: this.toUser.id,
+        toUserId: this.playerType,
+        typeMessage:'Sistema',
+        messageId: Date.now().toString(),
+        toUserName:this.name,
+        userName: "Sistema",
+        time: new Date().toLocaleString(),
+        message: 'O player '+this.toUser.id+' perdeu a conexão. Você venceu.',
+      };
 
-    // Mock message
-    let newMsg = {
-      typeMessage:'userMessage',
-      messageId: Date.now().toString(),
-      userId: this.user.id,
-      toUserName:this.toUser.name,
-      userName: this.name,
-      toUserId: this.toUser.id,
-      time: new Date().toLocaleString(),
-      message: this.editorMsg,
-    };
+      this.editorMsg = '';
+  
+      if (!this.showEmojiPicker) {
+        this.focus();
+      }
+      this.chatService.sendMsg(newMsg)
+      this.getPecasP1();
+      this.getPecasP2();
+      this.isReadyToplay = false;
+      this.vezDo = null;
 
-    this.pushNewMsg(newMsg);
-    this.editorMsg = '';
+    }else{
+      if (!this.editorMsg.trim()) return;
 
-    if (!this.showEmojiPicker) {
-      this.focus();
+      // Mock message
+      let newMsg = {
+        userId: this.playerType,
+        toUserId: this.toUser.id,
+        typeMessage:'userMessage',
+        messageId: Date.now().toString(),
+        toUserName:this.toUser.name,
+        userName: this.name,
+        time: new Date().toLocaleString(),
+        message: this.editorMsg,
+      };
+  
+      //this.pushNewMsg(newMsg);
+      this.editorMsg = '';
+  
+      if (!this.showEmojiPicker) {
+        this.focus();
+      }
+      this.chatService.sendMsg(newMsg)
     }
-    this.chatService.sendMsg(newMsg)
+    
   
   }
 
   
 
-  pushNewMsg(msg: ChatMessage) {
-    const userId = this.user.id,
-      toUserId = this.toUser.id;
+  pushNewMsg(msg) {
+
+    const userId = this.playerType,
+    toUserId = this.toUser.id;
     // Verify user relationships
     if (msg.userId === userId && msg.toUserId === toUserId) {
       this.msgList.push(msg);
     } else if (msg.toUserId === userId && msg.userId === toUserId) {
       this.msgList.push(msg);
     }
+    // Verify user relationships
     this.scrollToBottom();
   }
 
@@ -238,7 +267,33 @@ export class GamePage {
     return this.msgList.findIndex(e => e.messageId === id)
   }
 
-  
+  aguardeSuaVez(){
+    swal.fire({
+      title:'Ops!',
+      text:'Aguarde a sua vez.',
+      type:'error',
+      customClass: this.customClass
+    })
+
+  }
+  modalVencedor(){
+    swal.fire({
+      title:'Parabéns!',
+      text:'Você venceu!!!',
+      type:'success',
+      customClass: this.customClass
+    }).then(()=>this.isReadyToplay = false)
+  }
+
+  modalPerdedor(){
+    swal.fire({
+      title:'Ahh ;(!',
+      text:'Você perdeu!!!',
+      type:'error',
+      customClass: this.customClass
+    }).then(()=>this.isReadyToplay = false)
+
+  }
 
 
   scrollToBottom() {
@@ -266,37 +321,120 @@ export class GamePage {
     textarea.scrollTop = textarea.scrollHeight;
   }
 
+
+  
+  emitirEventoMovimentarPeca(pecasPlayer1:Array<PecaTabuleiro>,pecasPlayer2:Array<PecaTabuleiro>,vezDo){
+    let newMsg = {
+      userId: this.playerType,
+      toUserId: this.toUser.id,
+      typeMessage:'moveMessage',
+      messageId: Date.now().toString(),
+      toUserName:this.toUser.name,
+      userName: this.name,
+      time: new Date().toLocaleString(),
+      pecasP1:pecasPlayer1,
+      pecasP2:pecasPlayer2,
+      vezDo: vezDo
+    };
+
+    this.chatService.sendMsg(newMsg);
+
+
+  }
+
+  desistir(){
+    swal.fire({
+      title: 'Desistir?',
+      text: 'Tem certeza que deseja desistir?',
+      type: 'question',
+      confirmButtonText: 'Continuar',
+      confirmButtonColor: '#20A6C3',
+      allowOutsideClick: false,
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      customClass: this.customClass
+
+    }).then((result) => {      
+      if (result.value) {
+        swal.fire({
+          title:'Ok!',
+          text:'Você acaba de desistir.',
+          type:'success',
+          customClass: this.customClass
+        }).then(()=> this.navCtrl.setRoot('WelcomePage'))
+        
+      
+      }
+  
+    })
+      
+  }
+  
+
   prepareToMove(peca:PecaTabuleiro){ 
     if(this.isReadyToplay){
+
+      console.log('this.vezDo',this.vezDo);
+      
       if(this.playerType =='1'){
         if(peca.player == 1){
-          this.pecaSelecionada = peca;
+          if(this.vezDo == 1){
+            this.pecaSelecionada = peca;
+          }else{
+            this.aguardeSuaVez();
+          }
         }
       }else if(this.playerType == '2'){
         if(peca.player == 2){
-          this.pecaSelecionada = peca;          
+          if(this.vezDo == 2){
+            this.pecaSelecionada = peca;
+          }else{
+            this.aguardeSuaVez();
+          }
         }
       }
     }
     
   }
-  
-  
+
+
+
   goTo(location){
-    if(this.isReadyToplay){
+    if(this.isReadyToplay){      
       this.pecaSelecionada = this.tabuleiroService.movimentarPeca(location,this.pecaSelecionada,this.pecasPlayer1.concat(this.pecasPlayer2));
+      
+      //this.pecaSelecionada = null;
       if(this.pecaSelecionada){
         if(this.pecaSelecionada.player == 1){
           this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1,this.pecasPlayer2);
           this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
-        }else{
+          this.vezDo = 2;
+        }else if(this.pecaSelecionada.player == 2){
           this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer2, this.pecasPlayer1);
           this.tabuleiroService.checaSePecaFoiCapturada(this.pecasPlayer1, this.pecasPlayer2);
+          this.vezDo = 1;
         }
-        this.pecaSelecionada = null;
+        this.emitirEventoMovimentarPeca(this.pecasPlayer1,this.pecasPlayer2,this.vezDo);
       }  
     }
     
+  }
+
+  checaSeTemVencedor(){
+    if(this.pecasPlayer1.length ==2 && this.pecasPlayer2.length >2){
+      if(this.playerType == '2'){
+        this.modalVencedor();
+      }else{
+        this.modalPerdedor();
+      }
+    }
+    if(this.pecasPlayer2.length == 2 && this.pecasPlayer1.length >2){
+      if(this.playerType == '1'){
+        this.modalVencedor();
+      }else{
+        this.modalPerdedor();
+      }
+    }
   }
 
 }

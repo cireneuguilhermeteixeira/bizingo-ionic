@@ -5,7 +5,6 @@ import { RelativeTime } from "../../pipes/relative-time";
 import { ChatService } from "../../providers/chat-service";
 import {TabuleiroService} from "../../providers/tabuleiro-service";
 import { GamePage } from './game';
-import {WebsocketService} from '../../providers/websocket-service';
 import { EmojiService } from "../../providers/emoji";
 import { EmojiPickerComponentModule } from "../../components/emoji-picker/emoji-picker.module";
 
@@ -27,7 +26,6 @@ import { EmojiPickerComponentModule } from "../../components/emoji-picker/emoji-
     EmojiService,
     ChatService,
     TabuleiroService,
-    WebsocketService
   ]
 })
 export class SignupPageModule { }

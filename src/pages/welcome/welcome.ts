@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
 import swal from 'sweetalert2'
+import { Socket } from 'ng-socket-io';
 
 
 @IonicPage()
@@ -9,7 +10,6 @@ import swal from 'sweetalert2'
   templateUrl: 'welcome.html'
 })
 export class WelcomePage {
-  name = 'Cireneu';
   customClass = {
     content:'sweet_contentImportant',
     container: 'sweet_containerImportant',
@@ -18,7 +18,9 @@ export class WelcomePage {
     confirmButton: 'sweet_confirmbuttonImportant',
     cancelButton: 'sweet_cancelbuttonImportant',
   };
-  constructor(public navCtrl: NavController) { }
+  constructor(
+    public navCtrl: NavController,
+    public socket: Socket) { }
 
   creteMatch() {
 
@@ -36,6 +38,8 @@ export class WelcomePage {
 
     }).then((result) => {      
       if (result.value) {
+        this.socket.connect();
+        this.socket.emit('set-nickname', result.value);
         this.navCtrl.setRoot('GamePage',{
           player:"1",
           name:result.value
@@ -70,7 +74,11 @@ export class WelcomePage {
       customClass: this.customClass
 
     }).then((result) => {      
+      
       if (result.value) {
+
+        this.socket.connect();
+        this.socket.emit('set-nickname', result.value);
         this.navCtrl.setRoot('GamePage',{
           player:"2",
           name:result.value

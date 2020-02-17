@@ -223,11 +223,7 @@
               <div class="arrow-up center" id="position-11-18" (click)="goTo('11-19')"></div>
               <div class="arrow-down center" id="position-11-19" (click)="goTo('11-20')"></div>
 
-              <div padding class="row dados-jogo">
-                <div class="col" style="margin-left: 150px;">
-                  <h1>00 : 00</h1>  
-                </div>
-              </div>
+              
           </ion-col>
           <ion-col style="margin-left: 600px;">
               <div class="title-card">
@@ -241,51 +237,55 @@
                         {{pecasPlayer1.length}} peças
                       </button>
                   </ion-col>
-                  <ion-col>
-                      <button ion-button color="primary" clear small icon-start>
-                        <ion-icon name="heart"></ion-icon>
-                          100 pts
-                      </button>
-                  </ion-col>
-                  <ion-col>
+                
+                  <ion-col *ngIf="vezDo == 1">
                     <button ion-button color="primary" clear small icon-start>
                       <ion-spinner color="primary" style="width: 15px;"></ion-spinner>
-                        Sua vez de jogar
+                        Vez do player 1 jogar
                     </button>
                   </ion-col>
-                </ion-row>
-              </ion-card>
-                <br>
-                <br>
-                <br>
-                <br>
-                <div class="title-card" *ngIf="isReadyToplay">
-                  <h2>Player 2 <span *ngIf="playerType == '2'">(Você - {{name}})</span></h2>
-                </div>
-                <ion-card class="card-style" *ngIf="isReadyToplay">
-                <ion-row>
-                  <ion-col style="width: 10px;">
-                    <button ion-button color="primary" clear small icon-start>
-                        <ion-icon name="radio-button-on"></ion-icon>
-                        {{pecasPlayer1.length}} peças
-                      </button>
-                  </ion-col>
-                  <ion-col>
-                      <button ion-button color="primary" clear small icon-start>
-                        <ion-icon name="heart"></ion-icon>
-                         100 pts
-                      </button>
-                  </ion-col>
-                  <ion-col>
+
+                  <ion-col *ngIf="vezDo == 2">
                     <button ion-button color="primary" clear small icon-start disabled>
                        Aguardando oponente
                     </button>
                   </ion-col>
                 </ion-row>
               </ion-card>
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="title-card">
+                  <h2>Player 2 <span *ngIf="playerType == '2'">(Você - {{name}})</span></h2>
+                </div>
+                <ion-card class="card-style">
+                <ion-row>
+                  <ion-col style="width: 10px;">
+                    <button ion-button color="primary" clear small icon-start>
+                        <ion-icon name="radio-button-on"></ion-icon>
+                        {{pecasPlayer2.length}} peças
+                      </button>
+                  </ion-col>
+                  
+                  <ion-col *ngIf="vezDo == 2">
+                    <button ion-button color="primary" clear small icon-start>
+                      <ion-spinner color="primary" style="width: 15px;"></ion-spinner>
+                      Vez do player 2 jogar
+                    </button>
+                  </ion-col>
+
+                  <ion-col *ngIf="vezDo == 1">
+                    <button ion-button color="primary" clear small icon-start disabled>
+                       Aguardando oponente
+                    </button>
+                  </ion-col>
+
+                </ion-row>
+              </ion-card>
 
               <ion-card class="desistencia" *ngIf="isReadyToplay">
-                <button ion-button color="danger" clear small icon-start>
+                <button ion-button color="danger" clear small icon-start (click)="desistir()">
                     Desistir
                 </button>
               </ion-card>
@@ -317,7 +317,8 @@
         <div *ngFor="let msg of msgList"
             class="message"
             [class.left]=" msg.userId === toUser.id "
-            [class.right]=" msg.userId === user.id ">
+            [class.right]=" msg.userId === user.id "
+            >
           <img class="user-img" [src]="msg.userAvatar" alt="" src="">
           <div class="msg-detail">
             <div class="msg-info">
@@ -342,10 +343,10 @@
                   id="chat_input"
                   placeholder="Converse com o oponente"
                   [(ngModel)]="editorMsg"
-                  (keyup.enter)="sendMsg()"
+                  (keyup.enter)="sendMsg(false)"
                   (focusin)="onFocus()">
         </textarea>
-        <button ion-button clear icon-only item-right (click)="sendMsg()">
+        <button ion-button clear icon-only item-right (click)="sendMsg(false)">
           <ion-icon name="ios-send" ios="ios-send" md="md-send"></ion-icon>
         </button>
       </div>

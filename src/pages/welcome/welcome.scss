@@ -3,7 +3,7 @@ page-welcome {
   
   .splash-bg {
     position: relative;
-    background: url('../assets/img/splashbg.png') no-repeat transparent;
+    background: url('../assets/img/wallpaper.jpg') no-repeat transparent;
     background-size: cover;
     height: 45%;
     z-index: 1;
@@ -24,8 +24,9 @@ page-welcome {
   }
   .splash-logo {
     margin: auto;
-    background: url('../assets/img/appicon.png') repeat transparent;
+    background: url('../assets/img/appicon.jpg') no-repeat transparent;
     background-size: 100%;
+    border-radius: 50%;
     width: 128px;
     height: 128px;
   }

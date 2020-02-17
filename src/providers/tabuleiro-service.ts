@@ -62,14 +62,129 @@ export class TabuleiroService {
 
 
   checaSePecaFoiCapturada(pecasJogadorAtual:Array<PecaTabuleiro>, pecasOutroJogador:Array<PecaTabuleiro>){
-    for(let i = 0; i<pecasJogadorAtual.length; i++){
-        for(let j = 0; j<pecasOutroJogador.length; j++){
-            if(pecasJogadorAtual[i]) {
-              
-            } 
+    this.capturaPecaNormal(pecasJogadorAtual,pecasOutroJogador);
+    this.capturaCapitao(pecasJogadorAtual,pecasOutroJogador);
+    this.capturaBorda(pecasJogadorAtual,pecasOutroJogador);
+  }
+
+  capturaPecaNormal(pecasJogadorAtual:Array<PecaTabuleiro>, pecasOutroJogador:Array<PecaTabuleiro>){
+    let amountAround = 0;
+    for(let i=0; i<pecasOutroJogador.length; i++){
+      for(let j=0; j<pecasJogadorAtual.length; j++){
+        if(this.isVisinha(pecasJogadorAtual[j], pecasOutroJogador[i],'regular')){
+          amountAround ++;
         }
+      }
+      if(amountAround>=3){
+        console.log("peça foi cercada por "+amountAround);
+        pecasOutroJogador.splice(i,1);
+      }
+      amountAround =0;
     }
   }
+
+  private isVisinha(pecaJogadorAtual:PecaTabuleiro,pecaOutroJogador:PecaTabuleiro,type):Boolean{
+    if(pecaOutroJogador.type==type || type == null){
+      if(pecaOutroJogador.x < 9){
+        if((pecaOutroJogador.x == pecaJogadorAtual.x   && (pecaOutroJogador.y == pecaJogadorAtual.y+1   || pecaOutroJogador.y == pecaJogadorAtual.y-1))||
+          (pecaOutroJogador.x  == pecaJogadorAtual.x+1 && (pecaOutroJogador.y == pecaJogadorAtual.y+1)) ||
+          (pecaOutroJogador.x  == pecaJogadorAtual.x-1 && (pecaOutroJogador.y == pecaJogadorAtual.y-1))
+        ){
+          return true;
+        }
+      }else if(pecaOutroJogador.x == 9){
+        if((pecaOutroJogador.x == pecaJogadorAtual.x   && (pecaOutroJogador.y == pecaJogadorAtual.y+1   || pecaOutroJogador.y == pecaJogadorAtual.y-1))||
+          (pecaOutroJogador.x  == pecaJogadorAtual.x+1 && (pecaOutroJogador.y == pecaJogadorAtual.y+1)) ||
+          (pecaOutroJogador.x  == pecaJogadorAtual.x-1 && (pecaOutroJogador.y == pecaJogadorAtual.y))
+        ){
+          return true;
+        }
+      }else if(pecaOutroJogador.x == 10){
+        if((pecaOutroJogador.x == pecaJogadorAtual.x   && (pecaOutroJogador.y == pecaJogadorAtual.y+1   || pecaOutroJogador.y == pecaJogadorAtual.y-1))||
+          (pecaOutroJogador.x  == pecaJogadorAtual.x+1 && (pecaOutroJogador.y == pecaJogadorAtual.y)) ||
+          (pecaOutroJogador.x  == pecaJogadorAtual.x-1 && (pecaOutroJogador.y == pecaJogadorAtual.y))
+        ){
+          return true;
+        }
+      }else if(pecaOutroJogador.x == 11){
+        if((pecaOutroJogador.x == pecaJogadorAtual.x   && (pecaOutroJogador.y == pecaJogadorAtual.y+1 || pecaOutroJogador.y == pecaJogadorAtual.y-1))||
+          (pecaOutroJogador.x  == pecaJogadorAtual.x+1 && (pecaOutroJogador.y == pecaJogadorAtual.y))
+        ){
+          return true;
+        }
+      }
+    }
+    return false;
+    
+  }
+
+  capturaCapitao(pecasJogadorAtual:Array<PecaTabuleiro>, pecasOutroJogador:Array<PecaTabuleiro>){
+    let amountAround = 0;
+    let isCaptain = false;
+    for(let i=0; i<pecasOutroJogador.length; i++){
+      for(let j=0; j<pecasJogadorAtual.length; j++){
+        if(this.isVisinha( pecasJogadorAtual[j], pecasOutroJogador[i],'captain')){          
+          if(pecasJogadorAtual[j].type == 'captain'){
+            isCaptain = true;
+          }
+          amountAround ++;
+        }
+      }
+      if(amountAround>=3 && isCaptain){
+        console.log("peça foi cercada por "+amountAround);
+        pecasOutroJogador.splice(i,1);
+      }
+      isCaptain = false;
+      amountAround =0;
+    }
+  }
+
+
+  capturaBorda(pecasJogadorAtual:Array<PecaTabuleiro>, pecasOutroJogador:Array<PecaTabuleiro>){
+    let amountAround = 0;
+    let isCaptain = false;
+    for(let i=0; i<pecasOutroJogador.length; i++){
+      for(let j=0; j<pecasJogadorAtual.length; j++){
+        if(pecasOutroJogador[i]){
+          if(pecasOutroJogador[i].x < 10){
+            if(pecasOutroJogador[i].y == 1 || pecasOutroJogador[i].y == (pecasOutroJogador[i].x*2)+3){
+              if(this.isVisinha(pecasJogadorAtual[j], pecasOutroJogador[i],null)){
+                if(pecasJogadorAtual[j].type == 'captain'){
+                  isCaptain = true;
+                }
+                amountAround ++;
+              }
+            }
+          }else if(pecasOutroJogador[i].x == 10){
+            if(pecasOutroJogador[i].y == 1 || pecasOutroJogador[i].y == 21){
+              if(this.isVisinha( pecasJogadorAtual[j], pecasOutroJogador[i],null)){          
+                if(pecasJogadorAtual[j].type == 'captain'){
+                  isCaptain = true;
+                }
+                amountAround ++;
+              }
+            }
+          }else if(pecasOutroJogador[i].x == 11){
+            if(pecasOutroJogador[i].y == 1 || pecasOutroJogador[i].y == 20){
+              if(this.isVisinha( pecasJogadorAtual[j], pecasOutroJogador[i],null)){          
+                if(pecasJogadorAtual[j].type == 'captain'){
+                  isCaptain = true;
+                }
+                amountAround ++;
+              }
+            }
+          } 
+        }
+      }
+      if(amountAround>=2 && isCaptain){
+        console.log("peça foi cercada por "+amountAround);
+        pecasOutroJogador.splice(i,1);
+      }
+      isCaptain = false;
+      amountAround =0;
+    }
+  }
+
 
 
   movimentarPeca(location,pecaSelecionada, pecas){
@@ -90,6 +205,7 @@ export class TabuleiroService {
                 pecaSelecionada.cssProperty["margin-left"] = (this.$size*10)+(this.$size* (pecaSelecionada.y-pecaSelecionada.x))+12+'px';
               }else{
                 console.log('Movimento inválido');
+                return null;
               }
           }else if(linha == 10 && pecaSelecionada.x ==9){
             if(coluna == pecaSelecionada.y+1 || coluna == pecaSelecionada.y-1){
@@ -98,7 +214,8 @@ export class TabuleiroService {
                 pecaSelecionada.cssProperty["margin-top"] = this.$size*(pecaSelecionada.x-1) +'px';            
                 pecaSelecionada.cssProperty["margin-left"] = (this.$size*10)+(this.$size* (pecaSelecionada.y-pecaSelecionada.x+1))+12+'px';
             }else{
-              console.log('Movimento inválido');          
+              console.log('Movimento inválido');
+              return null;          
             }
           }else if(linha == 9 && pecaSelecionada.x ==10){
             if(coluna == pecaSelecionada.y+1 || coluna == pecaSelecionada.y-1){
@@ -107,7 +224,8 @@ export class TabuleiroService {
                 pecaSelecionada.cssProperty["margin-top"] = this.$size*(pecaSelecionada.x-1) +'px';            
                 pecaSelecionada.cssProperty["margin-left"] = (this.$size*10)+(this.$size* (pecaSelecionada.y-pecaSelecionada.x))+12+'px';
             }else{
-                console.log('Movimento inválido');           
+                console.log('Movimento inválido');
+                return null;           
             }
           }else if(linha == 11 && pecaSelecionada.x == 10){        
             if(coluna == pecaSelecionada.y+1 || coluna == pecaSelecionada.y-1){
@@ -116,7 +234,8 @@ export class TabuleiroService {
               pecaSelecionada.cssProperty["margin-top"] = this.$size*(pecaSelecionada.x-1) +'px';            
               pecaSelecionada.cssProperty["margin-left"] = (this.$size*10)+(this.$size* (pecaSelecionada.y-pecaSelecionada.x+2))+12+'px';
             }else{
-              console.log('Movimento inválido'); 
+              console.log('Movimento inválido');
+              return null; 
             }
           }else if(linha == 10 && pecaSelecionada.x ==11){
             if(coluna == pecaSelecionada.y+1 || coluna == pecaSelecionada.y-1){
@@ -126,14 +245,16 @@ export class TabuleiroService {
               pecaSelecionada.cssProperty["margin-left"] = (this.$size*10)+(this.$size* (pecaSelecionada.y-pecaSelecionada.x+1))+12+'px';
             }else{
               console.log('Movimento inválido'); 
+              return null;
             }
           }else{
             console.log('Movimento inválido'); 
+            return null;
           }
       }
     }else{
       console.log('selecione uma peça para movê-la');
-    
+      return null;
     }
     return pecaSelecionada;
   
