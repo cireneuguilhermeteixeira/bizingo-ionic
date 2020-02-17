@@ -14,7 +14,9 @@ import { Settings, User, Api } from '../providers';
 import { MyApp } from './app.component';
 import {DragulaModule} from 'ng2-dragula';
 import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+const config: SocketIoConfig = { url: 'http://bizingo-node-server.herokuapp.com', options: {} };
+
+//const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
  
 
 
