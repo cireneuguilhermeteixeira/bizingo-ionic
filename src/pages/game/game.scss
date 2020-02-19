@@ -75,6 +75,8 @@ page-game {
     margin-top: $size*12;
   }
 
+
+
   .card-style{
     z-index: 10;
     max-width: 400px;
@@ -95,6 +97,14 @@ page-game {
     position: fixed;
     right: 0;
     margin-top: 100px;
+  }
+
+  .reiniciar{
+    z-index: 10;
+    max-width: 400px;
+    position: fixed;
+    right: 0;
+    margin-top: 200px;
   }
 
   .card-style button{

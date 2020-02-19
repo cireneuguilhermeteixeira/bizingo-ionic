@@ -227,7 +227,7 @@
           </ion-col>
           <ion-col style="margin-left: 600px;">
               <div class="title-card">
-                <h2>Player 1 <span *ngIf="playerType == '1'">(Você - {{name}})</span></h2>
+                <h2>Player 1 <span *ngIf="id == '1'">(Você - {{name}})</span></h2>
               </div>
               <ion-card class="card-style">                
                 <ion-row>
@@ -257,7 +257,7 @@
                 <br>
                 <br>
                 <div class="title-card">
-                  <h2>Player 2 <span *ngIf="playerType == '2'">(Você - {{name}})</span></h2>
+                  <h2>Player 2 <span *ngIf="id == '2'">(Você - {{name}})</span></h2>
                 </div>
                 <ion-card class="card-style">
                 <ion-row>
@@ -290,8 +290,8 @@
                 </button>
               </ion-card>
 
-              <ion-card class="desistencia" *ngIf="isReadyToplay">
-                <button ion-button color="secondary" clear small icon-start (click)="reiniciarPartida()">
+              <ion-card class="reiniciar" *ngIf="isReadyToplay">
+                <button ion-button color="secondary" clear small icon-start (click)="sendMsgReiniciar()">
                     Reiniciar Partida
                 </button>
               </ion-card>

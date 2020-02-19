@@ -44,9 +44,18 @@ export class ChatService {
   }
 
 
-  getUsers() {
+  getUsersChanges() {
     let observable = new Observable(observer => {
       this.socket.on('users-changed', (data) => {
+        observer.next(data);
+      });
+    });
+    return observable;
+  }
+
+  getUsers() {
+    let observable = new Observable(observer => {
+      this.socket.on('users', (data) => {
         observer.next(data);
       });
     });
@@ -68,8 +77,19 @@ export class ChatService {
   sendMsg(msg) {
     return new Promise(resolve => setTimeout(() => 
         this.socket.emit('add-message', { message: msg }),
-    Math.random() * 1000))
+        Math.random() * 1000))
     //.then(() => this.mockNewMsg(msg));
+  }
+
+  checkUsers(){
+    return new Promise(resolve=> setTimeout(() =>
+    this.socket.emit('check-users'),  Math.random() * 5000))
+
+  }
+
+  setPlayerData(data){
+    return new Promise(resolve=> setTimeout(() =>
+      this.socket.emit('set-player-data',data),  Math.random() * 1000))
   }
 
 }

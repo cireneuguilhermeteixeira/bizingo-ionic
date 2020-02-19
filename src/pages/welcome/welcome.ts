@@ -39,9 +39,8 @@ export class WelcomePage {
     }).then((result) => {      
       if (result.value) {
         this.socket.connect();
-        this.socket.emit('set-nickname', result.value);
         this.navCtrl.setRoot('GamePage',{
-          player:"1",
+          id:"1",
           name:result.value
         });
       
@@ -78,9 +77,8 @@ export class WelcomePage {
       if (result.value) {
 
         this.socket.connect();
-        this.socket.emit('set-nickname', result.value);
         this.navCtrl.setRoot('GamePage',{
-          player:"2",
+          id:"2",
           name:result.value
         });
       
