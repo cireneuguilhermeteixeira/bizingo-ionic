@@ -90,6 +90,7 @@ export class WelcomePage {
 
   clearServer(){
     this.chatServiceRpc.clearServer().subscribe();
+    location.reload();
   }
 
 
