@@ -3,11 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { IonicPage, NavController, ToastController, Content, Events, NavParams, Platform, MenuController, App, IonicApp } from 'ionic-angular';
 import { UserInfo } from '../../models/user-info';
 import { ChatMessage } from '../../models/chat-message';
-import { ChatService } from '../../providers/chat-service';
 import {PecaTabuleiro} from '../../models/peca-tabuleiro';
 import { TabuleiroService } from '../../providers/tabuleiro-service';
 import swal from 'sweetalert2'
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { ChatServiceRpc } from '../../providers/chat-service-rpc';
 
 
 @IonicPage()
@@ -27,7 +27,10 @@ export class GamePage {
   };
 
   id = '';
-  subs:Subscription 
+  subP1: Subscription;//Pecas player 1
+  subP2: Subscription;//Pecas player 1
+  subPs: Subscription;//players
+  subMsg: Subscription;//Mensagens
   isConnected = false;
   pecasPlayer1: Array<PecaTabuleiro> = [];
   pecasPlayer2: Array<PecaTabuleiro> = [];
@@ -45,16 +48,16 @@ export class GamePage {
   name = '';
   isReadyToplay = false;
   vezDo = null;
-  
+  sizeMessageServer = 0;
   // Our translated text strings
   private signupErrorString: string;
 
   constructor(
+    public chatServiceRpc: ChatServiceRpc,
     public tabuleiroService: TabuleiroService,
     public menu: MenuController,
     public platform: Platform,
     public navParams: NavParams,
-    public chatService: ChatService,
     public events: Events,
     public navCtrl: NavController,
     public toastCtrl: ToastController,
@@ -75,7 +78,8 @@ export class GamePage {
 
 
   ionViewWillLeave() {
-    this.chatService.closeConnection();
+    this.sendMsgDesistir();
+    this.closeConnection();
   }
 
   ionViewDidEnter() {
@@ -85,22 +89,24 @@ export class GamePage {
     this.name = this.navParams.get('name');
     if(!this.id || !this.name){
       this.navCtrl.setRoot('WelcomePage');
+    }else{
+      this.getPecas(this.id);
+      this.user = {
+        id:this.id,
+        name:this.name
+      }
+      this.inicializaComunicacao();
+     
+      this.toUser = {
+        id:null,
+        name:null
+      }
+     
+      this.events.subscribe('chat:received', msg => {
+        this.pushNewMsg(msg);
+      })      
     }
 
-    this.getPecas(this.id);
-    this.initializeSocket();
-    this.user = {
-      id:this.id,
-      name:this.name
-    }
-    this.toUser = {
-      id:null,
-      name:null
-    }
-   
-    this.events.subscribe('chat:received', msg => {
-      this.pushNewMsg(msg);
-    })
   }
 
   getPecas(p){
@@ -109,105 +115,99 @@ export class GamePage {
     }
     if(p=='2'){
       this.getPecasP2();
-      //this.isReadyToplay = true;
-      //this.vezDo = 1;
     }
   }
 
-  initializeSocket(){
 
-    this.chatService.checkUsers();
-    this.subs = this.chatService.getUsers().subscribe(users => {
-        let players = users['players'];
-        if(players.length>2){
-          swal.fire({
-            title:'Ops!',
-            text:'A sala já está cheia.',
-            type:'error',
-            customClass: this.customClass
-          })
-          .then(()=>this.chatService.closeConnection())
-          .then(()=>this.navCtrl.setRoot('WelcomePage'))
-
-        }else if(players.filter(p=> p.id == this.id).length>0){
-          swal.fire({
-            title:'Ops!',
-            text:'Já existe um player'+ this.id+' conectado.',
-            type:'error',
-            customClass: this.customClass
-          })
-          .then(()=>this.chatService.closeConnection())
-          .then(()=>this.navCtrl.setRoot('WelcomePage'))
-          
-        }else{
-          this.isConnected = true;
-          this.chatService.setPlayerData({
-            name:this.name,
-            id:this.id,
-          });
+  getStatusPecasPlayer1(){
+    this.subP1 = Observable.interval(1000).subscribe(x => {
+      this.chatServiceRpc.getStatusPecasPlayer1().subscribe((resp:any)=>{
+        if(!Object.is(this.pecasPlayer1,resp.data)){
+          this.pecasPlayer1 = resp.data;
         }
-        this.subs.unsubscribe();
+      });
     });
-    
-    
-
-
-    this.chatService.getMessages().subscribe(message => {
-
-      if( message['message']['typeMessage'] == 'userMessage'){
-        this.pushNewMsg(message['message']);
-      }
-
-      if(message['message']['typeMessage'] == 'sistema'){
-        this.modalVencedor();
-        this.pushNewMsg(message['message']);
-      }
-
-      if(message['message']['typeMessage'] == 'moveMessage'){
-        this.updatePositions(message['message']);
-        this.checaSeTemVencedor();
-      }
-
-      if(message['message']['typeMessage'] == 'restartRequest'){
-        this.pushNewMsg(message['message']);
-        if(message['message']['userId']!=this.user.id){
-          this.requestReiniciarPartida();
-        }
-      }
-
-    });
- 
-    this.chatService.getUsersChanges().subscribe(data => {
-      console.log(data);
+  } 
   
-      let players = data['players']
-      let user = data['user'];
+  getStatusPecasPlayer2(){
+    this.subP2 = Observable.interval(1000).subscribe(x => {
+      this.chatServiceRpc.getStatusPecasPlayer2().subscribe((resp:any)=>{
+        if(!Object.is(this.pecasPlayer2,resp.data)){
+          this.pecasPlayer2 = resp.data;
+        }
+      });
+    });
+  } 
 
-      if(user){
-        if (data['event'] === 'left') {
-          if(user.id == this.toUser.id ){
-            this.sendMsg(true);//Avisa que jogador se desconectou.
+
+  getStatusPlayers(){
+    this.subPs = Observable.interval(700).subscribe(x => {
+      this.chatServiceRpc.getStatusPlayers().subscribe((resp:any)=>{
+          let players = resp.data as Array<any>;
+          if(players.length == 2){
+              this.toUser = players.filter(pl=> pl.id != this.user.id)[0];
+              this.isReadyToplay = true;
+              this.vezDo = 1;
+              this.subPs.unsubscribe();
+              this.subPs = null;
           }
-        } else {
-          if(players.length==2){
-  
-            this.toUser.id = this.id == '1'? '2': '1';
-            this.getPecas(this.toUser.id);
-            if(players.filter(p=>p.id == this.toUser.id)[0]){
-              this.toUser.name = players.filter(p=>p.id == this.toUser.id)[0].name;
-            }
-            this.isReadyToplay = true;
-            this.vezDo = 1;
-          }  
-        }
-      }
+      });
     });
+  } 
 
+  getMessages(){
+    
+    this.subMsg = Observable.interval(1000).subscribe(x => {
+        this.chatServiceRpc.getMessages().subscribe((messages:any)=>{
+          if(messages.data.length > 0 && messages.data.length > this.sizeMessageServer){
+            this.sizeMessageServer = messages.data.length;
+            let message = messages.data[this.sizeMessageServer-1];
+
+            if(message.typeMessage == 'userMessage'){
+              this.pushNewMsg(message);
+            }
+  
+            if(message.typeMessage == 'giveUp'){
+              this.modalVencedor();
+              this.pushNewMsg(message);
+            }
+  
+            if(message.typeMessage == 'moveMessage'){
+              this.updatePositions(message);
+              this.checaSeTemVencedor();
+            }
+  
+            if(message.typeMessage == 'restartRequest'){
+              this.pushNewMsg(message);  
+              if(message.userId != this.user.id){
+                this.requestReiniciarPartida();
+              }
+            }
+          }
+      });
+    });
+  }
+
+
+  inicializaComunicacao(){
+
+    this.getStatusPlayers();
+    
+    if(this.user.id == '1'){
+      this.getStatusPecasPlayer2();
+    }else{
+      this.getStatusPecasPlayer1();
+    }
+    this.getMessages();
+    
+ 
   }
 
   updatePositions(message){
     this.pecasPlayer1 = message['pecasP1'];
     this.pecasPlayer2 = message['pecasP2'];
+    this.chatServiceRpc.setStatusPecasPlayer1(this.pecasPlayer1).subscribe();
+    this.chatServiceRpc.setStatusPecasPlayer2(this.pecasPlayer2).subscribe();
     this.vezDo = message['vezDo'];
   }
 
@@ -216,6 +216,10 @@ export class GamePage {
     .subscribe(res=> {
       this.pecasPlayer1 = res;
       this.tabuleiroService.posicionarPecasPlayer1(this.pecasPlayer1);
+      this.chatServiceRpc.setStatusPecasPlayer1(this.pecasPlayer1).subscribe(resp=>{
+        this.isConnected = true;
+      });
+
     });
   }
 
@@ -224,6 +228,9 @@ export class GamePage {
     .subscribe(res=>{ 
       this.pecasPlayer2 = res 
       this.tabuleiroService.posicionarPecasPlayer2(this.pecasPlayer2);
+      this.chatServiceRpc.setStatusPecasPlayer2(this.pecasPlayer2).subscribe(resp=>{
+        this.isConnected = true;
+      });
     });
   }
 
@@ -246,6 +253,25 @@ export class GamePage {
     this.scrollToBottom();
   }
 
+  sendMsgDesistir(){
+    
+    let newMsg = {
+      userId: this.user.id,
+      toUserId: this.toUser.id,
+      typeMessage:'giveUp',
+      messageId: Date.now().toString(),
+      toUserName:this.toUser.name,
+      userName: "Sistema",
+      time: new Date().toLocaleString(),
+      message: 'O player '+this.user.id+' se desconectou da partida. Você venceu.',
+    };
+    this.editorMsg = '';
+
+    if (!this.showEmojiPicker) {
+      this.focus();
+    }
+    this.chatServiceRpc.setMessage(newMsg).subscribe();
+  }
 
   sendMsgReiniciar(){
     let newMsg = {
@@ -264,7 +290,7 @@ export class GamePage {
     if (!this.showEmojiPicker) {
       this.focus();
     }
-    this.chatService.sendMsg(newMsg)
+    this.chatServiceRpc.setMessage(newMsg).subscribe();
 
     swal.fire({
       title:'Ok!',
@@ -274,7 +300,9 @@ export class GamePage {
     })
   }
 
-    
+  clearServer(){
+    this.chatServiceRpc.clearServer().subscribe();
+  }
 
   sendMsg(disconnect:Boolean) {
     if(disconnect){
@@ -294,7 +322,7 @@ export class GamePage {
       if (!this.showEmojiPicker) {
         this.focus();
       }
-      this.chatService.sendMsg(newMsg)
+      this.chatServiceRpc.setMessage(newMsg).subscribe();
       this.getPecasP1();
       this.getPecasP2();
       this.isReadyToplay = false;
@@ -321,7 +349,9 @@ export class GamePage {
       if (!this.showEmojiPicker) {
         this.focus();
       }
-      this.chatService.sendMsg(newMsg)
+      console.log('newMsg',newMsg);
+      
+      this.chatServiceRpc.setMessage(newMsg).subscribe();
     }
     
   
@@ -401,7 +431,16 @@ export class GamePage {
     textarea.scrollTop = textarea.scrollHeight;
   }
 
-
+  closeConnection(){
+    this.clearServer();
+    if(this.subPs){
+      this.subPs.unsubscribe();
+    }
+    this.subMsg.unsubscribe();
+    this.subP1.unsubscribe();
+    this.subP2.unsubscribe();
+  
+  }
   
   emitirEventoMovimentarPeca(pecasPlayer1:Array<PecaTabuleiro>,pecasPlayer2:Array<PecaTabuleiro>,vezDo){
     let newMsg = {
@@ -417,7 +456,7 @@ export class GamePage {
       vezDo: vezDo
     };
 
-    this.chatService.sendMsg(newMsg);
+    this.chatServiceRpc.setMessage(newMsg).subscribe();
 
 
   }
@@ -436,16 +475,15 @@ export class GamePage {
 
     }).then((result) => {      
       if (result.value) {
+        this.sendMsgDesistir();
+        this.closeConnection();
+        this.navCtrl.setRoot('WelcomePage');
         swal.fire({
           title:'Ok!',
           text:'Você acaba de desistir.',
           type:'success',
           customClass: this.customClass
-        }).then(()=>{
-            this.chatService.closeConnection();
-           this.navCtrl.setRoot('WelcomePage');
-          })
-        
+        })
     
       }
   

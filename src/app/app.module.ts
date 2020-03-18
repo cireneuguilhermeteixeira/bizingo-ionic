@@ -13,10 +13,8 @@ import { Items } from '../mocks/providers/items';
 import { Settings, User, Api } from '../providers';
 import { MyApp } from './app.component';
 import {DragulaModule} from 'ng2-dragula';
-import { SocketIoModule, SocketIoConfig } from 'ng-socket-io';
-//const config: SocketIoConfig = { url: 'https://bizingo-node-server.herokuapp.com', options: {} };
+import { ChatServiceRpc } from "../providers/chat-service-rpc";
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
  
 
 
@@ -50,7 +48,6 @@ export function provideSettings(storage: Storage) {
     BrowserModule,
     HttpClientModule,
     DragulaModule.forRoot(),
-    SocketIoModule.forRoot(config),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -71,6 +68,7 @@ export function provideSettings(storage: Storage) {
     User,
     Camera,
     SplashScreen,
+    ChatServiceRpc,
     StatusBar,
     { provide: Settings, useFactory: provideSettings, deps: [Storage] },
     // Keep this to enable Ionic's runtime error handling during development
