@@ -44,7 +44,7 @@
     "zone.js": "0.8.29"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.13.2",
+    "@angular-devkit/build-angular": "^15.0.0",
     "@ionic/app-scripts": "3.2.4",
     "babel-plugin-date-fns": "^2.0.0",
     "cordova-plugin-device": "^2.0.2",
